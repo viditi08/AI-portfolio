@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import AboutModal from './AboutModal';
 import FluidBackground from './FluidBackground';
 import './App.css';
+
+// We will add the modals back in a later step
+// import AboutModal from './AboutModal';
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
-  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isChatMode, setIsChatMode] = useState(false);
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
-
-    if (!isChatMode) {
-      setIsChatMode(true);
-    }
+    if (!isChatMode) setIsChatMode(true);
 
     const userMessage = { text: messageText, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
@@ -48,13 +46,6 @@ function App() {
     sendMessage(suggestion);
   };
 
-  const resetToHome = () => {
-    setMessages([]);
-    setCurrentPage('home');
-    setInput('');
-    setIsChatMode(false);
-  };
-
   const handleNavClick = (page) => {
     setCurrentPage(page);
     setMessages([]);
@@ -62,468 +53,66 @@ function App() {
     setIsChatMode(false);
   };
 
-  const suggestions = currentPage === 'home' ? 
-    ["Favorite Project", "Something Interesting", "Let's start with a joke"] :
-    currentPage === 'hire' ?
-    ["What are your salary expectations?", "When can you start?", "Tell me about your experience"] :
-    currentPage === 'contact' ?
-    ["What's the best way to reach you?", "How quickly do you respond?", "What's your time zone?"] :
-    ["What are your key skills?", "Tell me about your experience", "What projects have you worked on?"];
+  const suggestions = [
+      "Favorite Project",
+      "Something Interesting",
+      "Let's start with a joke"
+  ];
 
-  if (currentPage === 'hire') {
-    return (
-      <div className="App">
-        <FluidBackground />
-        {/* Navigation */}
-        <nav className="top-nav">
-          <div className="nav-left">
-            <a href="#" onClick={() => handleNavClick('home')} className="logo">Viditi Vartak</a>
-          </div>
-          <div className="nav-links">
-            <a href="#" onClick={() => handleNavClick('hire')} className="active">Looking to hire?</a>
-            <a href="#" onClick={() => handleNavClick('contact')}>Contact</a>
-            <a href="#" onClick={() => handleNavClick('resume')}>Resume</a>
-          </div>
-          <div className="nav-right">
-            <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-btn">
-              Connect on LinkedIn
-            </a>
-          </div>
-        </nav>
-
-        {/* Hire Page Content */}
-        <div className="hire-page">
-          <div className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">Looking to Hire?</h1>
-              <p className="hero-subtitle">Let's discuss how I can contribute to your team</p>
-              
-              <div className="info-cards">
-                <div className="info-card">
-                  <h3>🚀 What I bring</h3>
-                  <p>Full-stack development expertise with modern technologies, AI/ML integration, and strong problem-solving skills.</p>
-                </div>
-                <div className="info-card">
-                  <h3>💼 What I'm looking for</h3>
-                  <p>Innovative projects in collaborative environments with opportunities for growth and meaningful impact.</p>
-                </div>
-                <div className="info-card">
-                  <h3>📫 Let's connect</h3>
-                  <div className="quick-contact">
-                    <a href="mailto:viditivartak08@gmail.com" className="contact-link">📧 Email</a>
-                    <a href="https://www.linkedin.com/in/viditivartak/" target="_blank" rel="noopener noreferrer" className="contact-link">💼 LinkedIn</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Chat Section */}
-          {!isChatMode ? (
-            <div className="chat-section">
-              <div className="suggestions">
-                {suggestions.map((suggestion, index) => (
-                  <button 
-                    key={index} 
-                    className="suggestion-pill" 
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    disabled={isLoading}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about hiring opportunities..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          ) : (
-            <div className="chat-container">
-              <div className="messages">
-                {messages.map((msg, index) => (
-                  <div key={index} className={`message ${msg.sender}`}>
-                    <div className="message-content">
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="message ai">
-                    <div className="message-content">
-                      <div className="typing-indicator">
-                        <span></span><span></span><span></span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about hiring opportunities..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* About Modal */}
-        <AboutModal 
-          isOpen={isAboutModalOpen} 
-          onClose={() => setIsAboutModalOpen(false)} 
-        />
-      </div>
-    );
-  }
-
-  if (currentPage === 'contact') {
-    return (
-      <div className="App">
-        <FluidBackground />
-        {/* Navigation */}
-        <nav className="top-nav">
-          <div className="nav-left">
-            <a href="#" onClick={() => handleNavClick('home')} className="logo">Viditi Vartak</a>
-          </div>
-          <div className="nav-links">
-            <a href="#" onClick={() => handleNavClick('hire')}>Looking to hire?</a>
-            <a href="#" onClick={() => handleNavClick('contact')} className="active">Contact</a>
-            <a href="#" onClick={() => handleNavClick('resume')}>Resume</a>
-          </div>
-          <div className="nav-right">
-            <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-btn">
-              Connect on LinkedIn
-            </a>
-          </div>
-        </nav>
-
-        {/* Contact Page Content */}
-        <div className="contact-page">
-          <div className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">Let's Connect</h1>
-              <p className="hero-subtitle">Get in touch with me through various channels</p>
-              
-              <div className="contact-info">
-                <div className="contact-card">
-                  <span className="contact-icon">📧</span>
-                  <div>
-                    <strong>Email</strong>
-                    <a href="mailto:viditivartak08@gmail.com">viditivartak08@gmail.com</a>
-                  </div>
-                </div>
-                <div className="contact-card">
-                  <span className="contact-icon">💼</span>
-                  <div>
-                    <strong>LinkedIn</strong>
-                    <a href="https://www.linkedin.com/in/viditivartak/" target="_blank" rel="noopener noreferrer">linkedin.com/in/viditivartak</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Chat Section */}
-          {!isChatMode ? (
-            <div className="chat-section">
-              <div className="suggestions">
-                {suggestions.map((suggestion, index) => (
-                  <button 
-                    key={index} 
-                    className="suggestion-pill" 
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    disabled={isLoading}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about contact information..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          ) : (
-            <div className="chat-container">
-              <div className="messages">
-                {messages.map((msg, index) => (
-                  <div key={index} className={`message ${msg.sender}`}>
-                    <div className="message-content">
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="message ai">
-                    <div className="message-content">
-                      <div className="typing-indicator">
-                        <span></span><span></span><span></span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about contact information..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* About Modal */}
-        <AboutModal 
-          isOpen={isAboutModalOpen} 
-          onClose={() => setIsAboutModalOpen(false)} 
-        />
-      </div>
-    );
-  }
-
-  if (currentPage === 'resume') {
-    return (
-      <div className="App">
-        <FluidBackground />
-        {/* Navigation */}
-        <nav className="top-nav">
-          <div className="nav-left">
-            <a href="#" onClick={() => handleNavClick('home')} className="logo">Viditi Vartak</a>
-          </div>
-          <div className="nav-links">
-            <a href="#" onClick={() => handleNavClick('hire')}>Looking to hire?</a>
-            <a href="#" onClick={() => handleNavClick('contact')}>Contact</a>
-            <a href="#" onClick={() => handleNavClick('resume')} className="active">Resume</a>
-          </div>
-          <div className="nav-right">
-            <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-btn">
-              Connect on LinkedIn
-            </a>
-          </div>
-        </nav>
-
-        {/* Resume Page Content */}
-        <div className="resume-page">
-          <div className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">My Resume</h1>
-              <p className="hero-subtitle">Learn about my professional background</p>
-              
-              <div className="skills-grid">
-                <div className="skill-card">
-                  <h4>Frontend</h4>
-                  <p>React, JavaScript, HTML5, CSS3</p>
-                </div>
-                <div className="skill-card">
-                  <h4>Backend</h4>
-                  <p>Node.js, Python, FastAPI, Java</p>
-                </div>
-                <div className="skill-card">
-                  <h4>Cloud & DevOps</h4>
-                  <p>AWS, Docker, Kubernetes, Jenkins</p>
-                </div>
-              </div>
-              
-              <a href="/Viditi-Vartak-Resume.pdf" target="_blank" className="download-btn">
-                📄 Download Resume
-              </a>
-            </div>
-          </div>
-
-          {/* Chat Section */}
-          {!isChatMode ? (
-            <div className="chat-section">
-              <div className="suggestions">
-                {suggestions.map((suggestion, index) => (
-                  <button 
-                    key={index} 
-                    className="suggestion-pill" 
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    disabled={isLoading}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about my background..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          ) : (
-            <div className="chat-container">
-              <div className="messages">
-                {messages.map((msg, index) => (
-                  <div key={index} className={`message ${msg.sender}`}>
-                    <div className="message-content">
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="message ai">
-                    <div className="message-content">
-                      <div className="typing-indicator">
-                        <span></span><span></span><span></span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="input-section">
-                <form className="input-form" onSubmit={handleSubmit}>
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Ask about my background..."
-                    className="chat-input"
-                    disabled={isLoading}
-                  />
-                  <button 
-                    type="submit" 
-                    className="send-btn" 
-                    disabled={isLoading || !input.trim()}
-                  >
-                    →
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* About Modal */}
-        <AboutModal 
-          isOpen={isAboutModalOpen} 
-          onClose={() => setIsAboutModalOpen(false)} 
-        />
-      </div>
-    );
-  }
-
-  // Home page (default)
-  return (
-    <div className="App">
-      <FluidBackground />
-      {/* Navigation */}
+  const renderHomePage = () => (
+    <>
       <nav className="top-nav">
         <div className="nav-links">
-          <a href="#" onClick={() => handleNavClick('hire')}>Looking to hire?</a>
-          <a href="#" onClick={() => handleNavClick('contact')}>Contact</a>
-          <a href="#" onClick={() => handleNavClick('resume')}>Resume</a>
+          <a href="#" className={currentPage === 'hire' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
+            <span className="nav-dot" style={{backgroundColor: '#3b82f6'}}></span>Looking to hire?
+          </a>
+          <a href="#" className={currentPage === 'contact' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
+             <span className="nav-dot" style={{backgroundColor: '#10b981'}}></span>Contact
+          </a>
+          <a href="#" className={currentPage === 'resume' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('resume'); }}>
+             <span className="nav-dot" style={{backgroundColor: '#f59e0b'}}></span>Resume
+          </a>
         </div>
         <div className="nav-right">
-          <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-btn">
-            Connect on LinkedIn
-          </a>
+             <button className="info-icon" title="About this page">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z"/></svg>
+             </button>
         </div>
       </nav>
 
       {!isChatMode ? (
         <div className="home-container">
-          {/* Hero Section */}
           <div className="hero-section">
             <div className="hero-content">
-              <h1 className="hero-title" onClick={() => handleNavClick('home')} style={{cursor: 'pointer'}}>Viditi Ai Portfolio</h1>
+              <h1 className="hero-title">Viditi Ai Portfolio</h1>
               <p className="hero-subtitle">Built using data from my life.</p>
-              
-              {/* Hero Image/Animation Area */}
-              <div className="hero-image-container">
-                <img src="/avatar.png" alt="Viditi Vartak" className="hero-avatar" />
-              </div>
+              <img src="/avatar.png" alt="Viditi Vartak" className="hero-avatar" />
             </div>
           </div>
 
-          {/* Chat Section */}
           <div className="chat-section">
+             <form className="input-form" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Hi, I'm Viditi, ask me anything about my skills, experience, projects, or resume."
+                className="chat-input"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                className="send-btn"
+                disabled={isLoading || !input.trim()}
+              >
+                →
+              </button>
+            </form>
             <div className="suggestions">
               {suggestions.map((suggestion, index) => (
-                <button 
-                  key={index} 
-                  className="suggestion-pill" 
+                <button
+                  key={index}
+                  className="suggestion-pill"
                   onClick={() => handleSuggestionClick(suggestion)}
                   disabled={isLoading}
                 >
@@ -531,77 +120,40 @@ function App() {
                 </button>
               ))}
             </div>
-            
-            <div className="input-section">
-              <form className="input-form" onSubmit={handleSubmit}>
-                <input 
-                  type="text" 
-                  value={input} 
-                  onChange={(e) => setInput(e.target.value)} 
-                  placeholder="Ask me anything..."
-                  className="chat-input"
-                  disabled={isLoading}
-                />
-                <button 
-                  type="submit" 
-                  className="send-btn" 
-                  disabled={isLoading || !input.trim()}
-                >
-                  →
-                </button>
-              </form>
-            </div>
           </div>
+          <footer className="home-footer">
+            <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="24" height="24"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg>
+            </a>
+          </footer>
         </div>
       ) : (
-        <div className="chat-container">
-          <div className="messages">
-            {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.sender}`}>
-                <div className="message-content">
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="message ai">
-                <div className="message-content">
-                  <div className="typing-indicator">
-                    <span></span><span></span><span></span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <div className="input-section">
-            <form className="input-form" onSubmit={handleSubmit}>
-              <input 
-                type="text" 
-                value={input} 
-                onChange={(e) => setInput(e.target.value)} 
-                placeholder="Ask me anything..."
-                className="chat-input"
-                disabled={isLoading}
-              />
-              <button 
-                type="submit" 
-                className="send-btn" 
-                disabled={isLoading || !input.trim()}
-              >
-                →
-              </button>
-            </form>
-          </div>
+        // This part will be styled later
+        <div className="chat-view-container">
+           {/* Your chat messages will appear here */}
         </div>
       )}
+    </>
+  );
 
-      {/* About Modal */}
-      <AboutModal 
-        isOpen={isAboutModalOpen} 
-        onClose={() => setIsAboutModalOpen(false)} 
-      />
+  // Placeholder for other pages
+  const renderOtherPage = (title) => (
+    <>
+      <nav className="top-nav">
+          {/* We will reuse the nav component */}
+      </nav>
+      <div style={{padding: '5rem 2rem', textAlign: 'center'}}>
+          <h1>{title}</h1>
+          <p>This page will be styled next.</p>
+          <a href="#" onClick={(e) => {e.preventDefault(); handleNavClick('home');}}>Back to Home</a>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="App">
+        <FluidBackground />
+        {currentPage === 'home' ? renderHomePage() : renderOtherPage(currentPage.charAt(0).toUpperCase() + currentPage.slice(1))}
     </div>
   );
 }

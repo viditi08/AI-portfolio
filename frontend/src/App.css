@@ -1,43 +1,214 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.App {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --- Top Navigation --- */
+.top-nav {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #333;
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.nav-links a:hover {
+  border-color: #bbb;
+  transform: translateY(-1px);
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.info-icon {
+  background-color: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* --- Home Page Container --- */
+.home-container {
+  flex-grow: 1; /* KEY: Fills the available vertical space */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  z-index: 5;
+  padding-top: 6rem; /* Space for the absolute nav */
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  flex-grow: 1; /* KEY: Pushes the chat-section down */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: #555;
+  margin: 0;
+  margin-bottom: 2rem;
 }
 
-.card {
-  padding: 2em;
+.hero-avatar {
+  width: 400px;
+  height: 400px;
+  object-fit: contain;
+  margin: 2rem 0;
+  border: none;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+  display: block;
+}
+/* --- Chat Input Section --- */
+.chat-section {
+  flex-shrink: 0; /* Prevents this section from shrinking */
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto; /* Center the section horizontally */
+  padding-bottom: 4rem; /* Space from the bottom edge */
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.read-the-docs {
-  color: #888;
+.input-form {
+  display: flex;
+  width: 100%;
+  background: white;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.07);
 }
-@import "tailwindcss";
+
+.chat-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.chat-input:focus {
+  outline: none;
+}
+
+.send-btn {
+  background-color: #193a87;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.send-btn:hover {
+  background-color: #b47193;
+}
+
+.send-btn:disabled {
+  background-color: #d298a2;
+  cursor: not-allowed;
+}
+
+.suggestions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.suggestion-pill {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  color: #555;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-pill:hover {
+  background-color: #f9fafb;
+  border-color: #ccc;
+}
+
+/* --- Footer --- */
+.home-footer {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2.5rem;
+  z-index: 10;
+}
+
+.linkedin-icon {
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.linkedin-icon:hover {
+  color: #0a66c2;
+}
