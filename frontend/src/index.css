@@ -1,50 +1,196 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
+.App {
+  width: 100%;
   height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: fixed;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  min-height: 100vh;
-  width: 100%;
-}
-
-/* Ensure content scrolls properly within the fixed viewport */
-.content-wrapper {
-  height: 100vh;
-  overflow-y: auto;
   position: relative;
+}
+
+/* --- Top Navigation --- */
+.top-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: flex-start;
   z-index: 10;
 }
 
-/* Add smooth scrolling for better UX */
-* {
-  scroll-behavior: smooth;
+.nav-links {
+  display: flex;
+  gap: 1rem;
 }
 
-/* Ensure text content is readable */
-.content-container {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  padding: 1rem;
-  border-radius: 8px;
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  border-color: #aaa;
+  color: #000;
+}
+
+/* --- Home Page Container --- */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+  padding-top: 6rem; /* Space for nav */
+  padding-bottom: 3rem; /* Space for footer */
+  z-index: 5;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: #555;
+  margin: 0;
+}
+
+/* --- Chat Input Section --- */
+.chat-section {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.input-form {
+  display: flex;
+  width: 100%;
+  background: white;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+.chat-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.chat-input:focus {
+  outline: none;
+}
+
+.send-btn {
+  background-color: #6366f1;
   color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
 }
 
-/* Add text shadow for better readability */
-h1, h2, h3, p {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.send-btn:hover {
+  background-color: #4f46e5;
+}
+
+.send-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.suggestions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.suggestion-pill {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  color: #555;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-pill:hover {
+  background-color: #f0f0f0;
+  border-color: #aaa;
+}
+
+/* --- Footer --- */
+.home-footer {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+}
+
+.linkedin-icon {
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.linkedin-icon:hover {
+  color: #0a66c2;
+}
+
+/* Basic styles for chat view - we will improve this next */
+.chat-view-container {
+  padding: 6rem 2rem 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex-grow: 1;
 }
