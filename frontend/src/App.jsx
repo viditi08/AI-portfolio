@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import FluidBackground from './FluidBackground';
 import './App.css';
+import HireMeModal from './HireMeModal.jsx';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+
 
 // We will add the modals back in a later step
 // import AboutModal from './AboutModal';
@@ -12,6 +17,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
   const [isChatMode, setIsChatMode] = useState(false);
+  const [isHireModalOpen, setIsHireModalOpen] = useState(false); 
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -47,10 +53,13 @@ function App() {
   };
 
   const handleNavClick = (page) => {
-    setCurrentPage(page);
-    setMessages([]);
-    setInput('');
-    setIsChatMode(false);
+    if (page === 'hire') {
+      // This is the main change: it now opens the modal
+      setIsHireModalOpen(true);
+    } else {
+      // You can add logic for 'contact' or 'resume' pages later
+      setCurrentPage(page);
+    }
   };
 
   const suggestions = [
@@ -154,6 +163,10 @@ function App() {
     <div className="App">
         <FluidBackground />
         {currentPage === 'home' ? renderHomePage() : renderOtherPage(currentPage.charAt(0).toUpperCase() + currentPage.slice(1))}
+        <HireMeModal 
+          isOpen={isHireModalOpen} 
+          onClose={() => setIsHireModalOpen(false)} 
+        />
     </div>
   );
 }

@@ -1,21 +1,23 @@
 import os
-import anthropic
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 load_dotenv()
 
-app = FastAPI()
+from langchain_community.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import Chroma
+from langchain_anthropic import ChatAnthropic
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
-# --- CORS Middleware ---
-# This allows your frontend (running on a different URL) to communicate with this backend.
-origins = [
-    "http://localhost:5173",  # The default for Vite
-    "http://127.0.0.1:5173",
-    # Add the URL of your deployed frontend here if you have one
-]
+app = FastAPI()
+origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,66 +27,72 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Anthropic Client ---
-# It's best practice to initialize the client once and reuse it.
-try:
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise ValueError("ANTHROPIC_API_KEY not found in .env file")
-    client = anthropic.Anthropic(api_key=api_key)
-except ValueError as e:
-    print(f"Error: {e}")
-    client = None
+retriever = None
+llm = None
 
-# --- Pydantic Models ---
-# These models define the expected request and response structures.
-class AskRequest(BaseModel):
+@app.on_event("startup")
+async def load_model_and_data():
+    global retriever, llm
+    loader = TextLoader("portfolio_stories.txt") #
+    documents = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    texts = text_splitter.split_documents(documents)
+    
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
+    db = Chroma.from_documents(texts, embeddings)
+    retriever = db.as_retriever(search_kwargs={"k": 3})
+    llm = ChatAnthropic(model="claude-3-sonnet-20240229") # Using a more recent model
+    print("✅ Backend startup complete with local embeddings and Claude.")
+
+class Query(BaseModel):
     question: str
-    conversation_id: str  # To maintain context in a chat
 
-class AskResponse(BaseModel):
-    answer: str
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
 
-# --- API Endpoints ---
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the AI Portfolio Backend"}
+@app.post("/ask")
+def ask_question(query: Query):
+    if not retriever or not llm:
+        return {"error": "Backend not initialized yet. Please wait a moment."}
+    
+    question = query.question.strip().lower()
 
-@app.post("/ask", response_model=AskResponse)
-async def ask_ai(request: AskRequest):
-    if not client:
-        return AskResponse(answer="Sorry, the AI service is not configured correctly.")
+    # --- NEW: Intercept the "hire" prompt ---
+    if "looking to hire" in question or "looking for a talent" in question:
+        print("✅ Returning Hire Me card response.")
+        
+        # This special string tells the frontend to render a card and suggestion chips.
+        hire_me_response = """
+### **</> Tech Stack**
+| Languages | Backend | Frontend | DevOps & Cloud |
+|---|---|---|---|
+| Python | FastAPI | React.js | AWS (EC2, S3, Lambda) |
+| Java | Node.js | Tailwind CSS | Docker |
+| JavaScript | Django REST | HTML5/CSS3 | Kubernetes |
+| TypeScript| Spring Boot | | Terraform |
 
-    # --- Basic Prompt Engineering ---
-    # You can expand this with a persona, instructions, and few-shot examples.
-    # For a portfolio, you might load your resume or project details here.
-    with open("portfolio_stories.txt", "r") as f:
-        portfolio_context = f.read()
+### **🚀 What I Bring**
+- Shipped production AI features and full-stack applications.
+- Experience building scalable cloud-native data pipelines with Spark and Kubernetes.
+- Automated 60% of customer support queries using fine-tuned language models.
+- Reduced application processing time by 45% by building a B2B platform from the ground up.
+- Strong product-first thinking and a user-centered design approach.
+[SUGGESTIONS:How can I contact you?,Tell me about a challenging project,What's your experience with AI?]
+"""
+        return {"answer": hire_me_response}
 
-    prompt = f"""{anthropic.HUMAN_PROMPT} You are a helpful AI assistant representing Viditi Vartak.
-    Your goal is to answer questions about her skills, projects, and experience based on the following context.
-    Keep your answers concise and professional.
-
-    Context:
-    {portfolio_context}
-
-    Question: {request.question}
-
-    {anthropic.AI_PROMPT}"""
-
-    try:
-        response = client.completions.create(
-            model="claude-2.1",  # Or whichever model you prefer
-            prompt=prompt,
-            max_tokens_to_sample=300,
-            temperature=0.7,
-        )
-        return AskResponse(answer=response.completion)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return AskResponse(answer="Sorry, I encountered an error while processing your request.")
-
-# --- To run this server ---
-# 1. Make sure you have a .env file with your ANTHROPIC_API_KEY.
-# 2. Open your terminal in this directory.
-# 3. Run the command: uvicorn main:app --reload
+    # --- Original RAG logic for all other questions ---
+    retrieved_docs = retriever.invoke(question)
+    if retrieved_docs:
+        print("✅ Context found. Answering with RAG.")
+        rag_prompt_template = "Context: {context}\nQuestion: {question}\nAnswer:"
+        rag_prompt = PromptTemplate.from_template(rag_prompt_template)
+        rag_chain = ({"context": retriever | format_docs, "question": RunnablePassthrough()} | rag_prompt | llm | StrOutputParser())
+        answer = rag_chain.invoke(question)
+    else:
+        print("⚠️ No context found. Answering with general knowledge.")
+        fallback_chain = llm | StrOutputParser()
+        answer = fallback_chain.invoke(question)
+        
+    return {"answer": answer}
