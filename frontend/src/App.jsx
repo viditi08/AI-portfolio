@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion'; // For animations
 import FluidBackground from './FluidBackground';
 import './App.css';
-import HireMeModal from './HireMeModal.jsx';
+import HirePage from './HirePage.jsx';       // Make sure this is imported
+import ContactPage from './ContactPage.jsx';   // Make sure this is imported
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-
-
-// We will add the modals back in a later step
-// import AboutModal from './AboutModal';
+import ResumePage from './ResumePage.jsx'; 
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('home'); // This state controls which page is visible
   const [isChatMode, setIsChatMode] = useState(false);
-  const [isHireModalOpen, setIsHireModalOpen] = useState(false); 
+  
+  // The 'isHireModalOpen' state is no longer needed because 'HirePage' is a full page, not a modal.
+  // We will remove it.
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -25,7 +25,7 @@ function App() {
 
     const userMessage = { text: messageText, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
+setInput('');
     setIsLoading(true);
 
     try {
@@ -52,14 +52,9 @@ function App() {
     sendMessage(suggestion);
   };
 
+  // --- CORRECTED function to handle page switching for all links ---
   const handleNavClick = (page) => {
-    if (page === 'hire') {
-      // This is the main change: it now opens the modal
-      setIsHireModalOpen(true);
-    } else {
-      // You can add logic for 'contact' or 'resume' pages later
-      setCurrentPage(page);
-    }
+    setCurrentPage(page);
   };
 
   const suggestions = [
@@ -68,17 +63,24 @@ function App() {
       "Let's start with a joke"
   ];
 
+  // This is your existing home page content, now correctly used
   const renderHomePage = () => (
-    <>
+    <motion.div
+      key="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <nav className="top-nav">
         <div className="nav-links">
-          <a href="#" className={currentPage === 'hire' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
             <span className="nav-dot" style={{backgroundColor: '#3b82f6'}}></span>Looking to hire?
           </a>
-          <a href="#" className={currentPage === 'contact' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
              <span className="nav-dot" style={{backgroundColor: '#10b981'}}></span>Contact
           </a>
-          <a href="#" className={currentPage === 'resume' ? 'active' : ''} onClick={(e) => { e.preventDefault(); handleNavClick('resume'); }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('resume'); }}>
              <span className="nav-dot" style={{backgroundColor: '#f59e0b'}}></span>Resume
           </a>
         </div>
@@ -105,7 +107,7 @@ function App() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Hi, I'm Viditi, ask me anything about my skills, experience, projects, or resume."
+                placeholder="Hi, I'm Viditi, ask me anything..."
                 className="chat-input"
                 disabled={isLoading}
               />
@@ -113,9 +115,7 @@ function App() {
                 type="submit"
                 className="send-btn"
                 disabled={isLoading || !input.trim()}
-              >
-                →
-              </button>
+              >→</button>
             </form>
             <div className="suggestions">
               {suggestions.map((suggestion, index) => (
@@ -124,9 +124,7 @@ function App() {
                   className="suggestion-pill"
                   onClick={() => handleSuggestionClick(suggestion)}
                   disabled={isLoading}
-                >
-                  {suggestion}
-                </button>
+                >{suggestion}</button>
               ))}
             </div>
           </div>
@@ -137,36 +135,24 @@ function App() {
           </footer>
         </div>
       ) : (
-        // This part will be styled later
         <div className="chat-view-container">
-           {/* Your chat messages will appear here */}
+           {/* Your main chat view will render here */}
         </div>
       )}
-    </>
-  );
-
-  // Placeholder for other pages
-  const renderOtherPage = (title) => (
-    <>
-      <nav className="top-nav">
-          {/* We will reuse the nav component */}
-      </nav>
-      <div style={{padding: '5rem 2rem', textAlign: 'center'}}>
-          <h1>{title}</h1>
-          <p>This page will be styled next.</p>
-          <a href="#" onClick={(e) => {e.preventDefault(); handleNavClick('home');}}>Back to Home</a>
-      </div>
-    </>
+    </motion.div>
   );
 
   return (
     <div className="App">
         <FluidBackground />
-        {currentPage === 'home' ? renderHomePage() : renderOtherPage(currentPage.charAt(0).toUpperCase() + currentPage.slice(1))}
-        <HireMeModal 
-          isOpen={isHireModalOpen} 
-          onClose={() => setIsHireModalOpen(false)} 
-        />
+        <AnimatePresence mode="wait">
+          {currentPage === 'home' && renderHomePage()}
+          {currentPage === 'contact' && <ContactPage key="contact" onClose={() => setCurrentPage('home')} />}
+          {currentPage === 'hire' && <HirePage key="hire" onClose={() => setCurrentPage('home')} />}
+          {currentPage === 'resume' && <ResumePage key="resume" onClose={() => setCurrentPage('home')} />}
+        </AnimatePresence>
+        
+        {/* The HireMeModal component is no longer used for a full page and can be removed if you don't need it as a pop-up elsewhere */}
     </div>
   );
 }
