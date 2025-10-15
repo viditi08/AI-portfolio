@@ -11,6 +11,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
 
 # Load environment variables
 load_dotenv()
@@ -39,17 +40,14 @@ rag_chain = None
 @app.on_event("startup")
 async def startup_event():
     """
-    This function runs once when the server starts.
-    It builds the entire RAG pipeline and stores it in a global variable.
+    Build the RAG pipeline once on startup and cache in a global.
     """
     global rag_chain
     print("🚀 Server starting up...")
     
     # 1. Load Documents
-    # We use a DirectoryLoader to load all files from the 'data' folder.
     print("   1. Loading documents from './data'...")
     pdf_loader = DirectoryLoader("./data", glob="**/*.pdf", loader_cls=PyPDFLoader)
-    # Use TextLoader for .txt files to avoid unstructured dependency
     txt_loader = DirectoryLoader("./data", glob="**/*.txt", loader_cls=TextLoader)
     pdf_docs = pdf_loader.load()
     txt_docs = txt_loader.load()
@@ -62,28 +60,57 @@ async def startup_event():
     splits = text_splitter.split_documents(all_docs)
     print(f"   ✅ Created {len(splits)} document chunks.")
 
-    # 3. Create Embeddings and Vector Store
-    # We use a free, powerful embedding model from Hugging Face.
-    # This runs locally and does not require an API key.
-    print("   3. Initializing embedding model...")
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # 3. Create Embeddings and Vector Store (Persisted)
+    print("   3. Initializing embedding model (all-mpnet-base-v2)...")
+    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
     
-    print("   4. Creating vector store (ChromaDB)... This may take a moment.")
-    vectorstore = Chroma.from_documents(documents=splits, embedding=embedding_model)
-    print("   ✅ Vector store created.")
+    print("   4. Creating/persisting vector store (ChromaDB)...")
+    vectorstore = Chroma.from_documents(
+        documents=splits,
+        embedding=embedding_model,
+        collection_name="portfolio",
+        persist_directory="./chroma_db",
+    )
+    vectorstore.persist()
+    print("   ✅ Vector store ready.")
+
+    # 4. Configure retriever (MMR for better diversity)
+    retriever = vectorstore.as_retriever(
+        search_type="mmr",
+        search_kwargs={"k": 6, "fetch_k": 24, "lambda_mult": 0.5},
+    )
 
     # 5. Initialize the LLM (Claude)
-    print("   5. Initializing LLM (Claude)...")
-    llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0.7)
+    print("   5. Initializing LLM (Claude 3.5 Sonnet)...")
+    llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0.2, max_tokens=600)
     print("   ✅ LLM initialized.")
     
-    # 6. Create the RAG Chain
+    # 6. Create a strict prompt for QA
+    system_instructions = (
+        "You are Viditi's AI portfolio assistant. Use only the provided context to answer. "
+        "If the answer isn't in the context, say you don't know. Be concise, friendly, and helpful. "
+        "Prefer bullet points when listing items. Use links if present in the context."
+    )
+    prompt = PromptTemplate(
+        template=(
+            "System: {system}\n\n"
+            "You will be given context and a question. Answer strictly from the context.\n\n"
+            "Context:\n{context}\n\n"
+            "Question: {question}\n\n"
+            "Answer:"
+        ),
+        input_variables=["system", "context", "question"],
+        partial_variables={"system": system_instructions},
+    )
+
+    # 7. Create the RAG Chain with custom prompt
     print("   6. Creating RAG chain...")
     rag_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=vectorstore.as_retriever(),
-        return_source_documents=True # Optional: to see which docs were used
+        retriever=retriever,
+        return_source_documents=True,
+        chain_type_kwargs={"prompt": prompt},
     )
     print("✅ RAG chain created successfully!")
     print("🎉 Backend startup complete. Ready to receive requests.")
@@ -100,11 +127,6 @@ def ask_question(query: Query):
     try:
         # Run the user's question through the RAG chain
         result = rag_chain.invoke({"query": query.question})
-        
-        # You can also inspect the source documents used
-        # for doc in result['source_documents']:
-        #     print(f"  > Source: {doc.metadata.get('source', 'Unknown')}")
-
         return {"answer": result['result']}
         
     except Exception as e:
