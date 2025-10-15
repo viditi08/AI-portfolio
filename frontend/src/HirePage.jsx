@@ -2,20 +2,40 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import rehypeRaw from 'rehype-raw';
 import './HirePage.css';
 
-const HirePage = ({ onClose }) => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const HirePage = ({
+  onClose,
+  messages: messagesProp,
+  setMessages: setMessagesProp,
+  input: inputProp,
+  setInput: setInputProp,
+  isLoading: isLoadingProp,
+  setIsLoading: setIsLoadingProp,
+  sendMessage: sendMessageProp,
+}) => {
+  // Local fallbacks if shared state isn't provided
+  const [localMessages, setLocalMessages] = useState([]);
+  const [localInput, setLocalInput] = useState('');
+  const [localIsLoading, setLocalIsLoading] = useState(false);
 
-  const sendMessage = async (messageText) => {
+  const messages = messagesProp ?? localMessages;
+  const setMessages = setMessagesProp ?? setLocalMessages;
+  const input = inputProp ?? localInput;
+  const setInput = setInputProp ?? setLocalInput;
+  const isLoading = isLoadingProp ?? localIsLoading;
+  const setIsLoading = setIsLoadingProp ?? setLocalIsLoading;
+
+  const internalSendMessage = async (messageText) => {
     if (!messageText.trim() || isLoading) return;
     setMessages(prev => [...prev, { text: messageText, sender: 'user' }]);
     setInput('');
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/ask', { question: messageText });
+      const response = await axios.post('/ask', { question: messageText });
       setMessages(prev => [...prev, { text: response.data.answer, sender: 'ai' }]);
     } catch (error) {
       setMessages(prev => [...prev, { text: "Sorry, I'm having trouble connecting.", sender: 'ai' }]);
@@ -24,12 +44,36 @@ const HirePage = ({ onClose }) => {
     }
   };
 
+  const sendMessage = sendMessageProp ?? internalSendMessage;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage(input);
   };
 
   const initialPrompts = ["How can I contact you?", "Tell me about a challenging project", "What's your experience with AI?"];
+
+  const MessageBubble = ({ msg }) => (
+    <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
+      <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          code({node, inline, className, children, ...props}) {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div" {...props}>
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>{children}</code>
+            );
+          }
+        }}
+      >
+        {msg.text}
+      </ReactMarkdown>
+    </div>
+  );
 
   return (
     <motion.div
@@ -75,6 +119,21 @@ const HirePage = ({ onClose }) => {
           <div className="modal-actions">
             <a href="mailto:viditivartak08@gmail.com" className="action-btn primary">Contact Me</a>
             <a href="/Viditi-Vartak-Resume.pdf" target="_blank" rel="noopener noreferrer" className="action-btn secondary">View Resume</a>
+          </div>
+        </div>
+
+        {/* Messages list */}
+        <div className="chat-messages-container">
+          <div className="message-list">
+            {messages.map((m, idx) => (
+              <div key={idx} className={`message-row ${m.sender}`}>
+                {m.sender === 'ai' && (
+                  <img className="avatar ai" src="/avatar.png" alt="Viditi avatar" />
+                )}
+                <MessageBubble msg={m} />
+              </div>
+            ))}
+            {isLoading && <div className="typing">Thinking…</div>}
           </div>
         </div>
       </div>
