@@ -1,0 +1,71 @@
+🧠 Work Experience
+Building intelligence into lending — My journey at LendAPI
+
+When I joined LendAPI, I wanted to see how technology could simplify one of the most complex financial processes — loan applications. The system felt outdated: too many manual checks, too much waiting, and very little intelligence behind the workflow. That challenge excited me.
+
+My first task was to help rebuild the company’s B2B loan platform from the ground up. I worked with Python and Django on the backend, connecting dozens of real-time APIs and designing secure authentication with JWT. It wasn’t just about coding; it was about creating trust in a system that handled sensitive financial data.
+
+As the platform evolved, I explored how AI could make the customer experience smarter. I built a customer service assistant fine-tuned with ChatGPT models — and suddenly, support queries that once took minutes were answered in seconds. Seeing automation reduce human effort without losing empathy made me realize the real value of applied AI.
+
+By the end of my internship, the product was not only faster — processing times dropped by 45% — but also smarter and more reliable. Deploying everything on AWS with CI/CD pipelines taught me how to think at scale and reinforced my curiosity for intelligent, self-learning systems.
+
+Scaling systems, scaling myself — Lessons from BusinessLab
+
+At BusinessLab, I learned what it truly means to design for scale. I joined a small team with a big goal: to modernize financial policy management through automation and modular systems. My focus was on microservice architecture using Java Spring Boot and PostgreSQL — tools that would help transform static processes into dynamic, responsive workflows.
+
+One of my favorite projects was automating the lead qualification pipeline. I wrote Python microservices that filtered, scored, and tracked leads in real time. What once required hours of manual review now ran autonomously — saving the team over six hours every week and improving conversion rates by 15%.
+
+But the real growth came from learning to integrate technology across systems. I used Terraform and Jenkins to automate deployments and embedded Jira into our CI/CD process. That cut deployment time by 30% and eliminated human error in production. It wasn’t glamorous work, but it was the foundation of every stable release.
+
+By the time I left, I wasn’t just writing APIs — I was thinking in systems. I had learned that scalable infrastructure is about designing for change, not just for performance. That philosophy continues to shape how I approach every new project.
+
+Learning agility through iteration — My time at Jiya Nutraherbs
+
+At Jiya Nutraherbs, I stepped into a startup world where speed and adaptability mattered most. My role as a backend intern was to bring structure to an evolving set of e-commerce tools. I built Node.js and Express.js services to manage orders and inventory — the kind of core functionality that keeps everything running smoothly behind the scenes.
+
+The technical part was exciting, but what challenged me more was learning to think like a product engineer. Every week brought a new client project, a new deployment target, and a new problem to debug. Deploying everything on AWS taught me the importance of automation — not just for efficiency, but for peace of mind.
+
+Working in agile cycles showed me how small, continuous improvements compound over time. By the end of the internship, I understood that engineering is as much about collaboration as it is about code. That mindset prepared me for the larger, more complex systems I’d later build.
+
+Designing for users, not just screens — My first step at Nibodh
+
+Nibodh was where I first learned to bridge design and development. I built mobile-friendly user interfaces using React and integrated REST APIs that served over 5,000 users. Seeing how design choices impacted engagement opened my eyes to the human side of software.
+
+I remember optimizing AWS integrations — S3 for storage, Lambda for automation — and watching data retrieval times drop instantly. It was my first taste of cloud computing, and it made me curious about how invisible infrastructure could create visible impact.
+
+Nibodh taught me one of the most important lessons in my journey: great software isn’t about the complexity of the stack, but the clarity of the experience. That belief still guides how I approach every feature, interface, and idea.
+
+🎓 Education
+California State University, Fullerton — Where I learned to connect logic with intuition
+
+Pursuing my Master’s in Computer Science at CSUF has been a journey of connecting deep technical knowledge with creativity. Courses like Advanced Algorithms, Artificial Intelligence, and Distributed Systems helped me see how individual components can come together to form intelligent, resilient networks.
+
+Beyond the classroom, I’ve worked on projects that turned theory into practice — from building AI-driven applications to deploying distributed data pipelines. This program hasn’t just refined my technical foundation; it’s shaped how I think about the role of AI in designing systems that are both efficient and ethical.
+
+💻 Projects
+SkySpark — Scaling analytics for the skies
+
+SkySpark started as a curiosity: how can we process massive airline performance data efficiently? Using Kubernetes, Apache Spark, and Cassandra, I engineered a cloud-native data pipeline that could analyze flight data at scale.
+
+The challenge was making it both fast and flexible. I learned how distributed computing systems handle real-world datasets — and how data visualization (through Python and Matplotlib) can transform raw numbers into insights. By the end, I had improved data accessibility by 40% and gained a deep respect for the architecture behind every scalable AI system.
+
+Resume Job Matcher AI — Where career meets code
+
+This project began with a simple frustration: applying for jobs is time-consuming, and most tools don’t really understand your skills. I built Resume Job Matcher AI using React.js, Flask, and LangChain to connect resumes and job descriptions in a smarter way.
+
+It parses PDFs, extracts data, and uses Google Gemini through LangChain to analyze how well a candidate matches a role. But the best part was building visualizations that showed users exactly where they could improve. I realized how retrieval and reasoning models could make hiring more transparent — a concept that ties closely to my interest in RAG and applied AI.
+
+WhatsApp Chat Analyzer — Turning conversations into insights
+
+I’ve always been fascinated by how humans communicate. This project let me explore that curiosity through code. Using Python, NLTK, and VADER, I built a WhatsApp Chat Analyzer that performs sentiment analysis and displays insights with Streamlit dashboards.
+
+It was a perfect blend of language, logic, and empathy — seeing emotional patterns emerge from text data felt like watching AI translate human nuance. This project deepened my interest in NLP and made me appreciate the power of data storytelling.
+
+🏅 Certifications & Learning
+AWS Certified Data Engineer – Associate
+
+This certification taught me how to design and maintain data pipelines that are reliable, cost-effective, and scalable. More importantly, it showed me the architectural thinking behind systems that handle terabytes of data without breaking. The lessons I learned here — about fault tolerance, monitoring, and optimization — directly influence how I build cloud-native applications today.
+
+Databricks Generative AI Fundamentals
+
+Studying generative AI on Databricks was my way of bridging curiosity with application. I learned how models retrieve, generate, and ground their outputs — the same principles that drive RAG systems. It made me realize that the future of AI isn’t just about smarter models, but about smarter data. This course inspired me to keep building tools that make intelligence more accessible, explainable, and human-centered.
