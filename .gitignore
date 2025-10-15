@@ -46,3 +46,9 @@ build
 # Coverage and test outputs
 coverage
 .nyc_output
+
+# Python
+**/__pycache__/
+
+# Vector DB (Chroma)
+backend/chroma_db/
