@@ -18,6 +18,12 @@
   z-index: 10;
 }
 
+.brand {
+  font-weight: 700;
+  color: #111;
+  cursor: pointer;
+}
+
 .nav-links {
   display: flex;
   gap: 0.75rem;
@@ -44,24 +50,18 @@
   transform: translateY(-1px);
 }
 
+.nav-right .top { /* top-right LinkedIn */
+  display: inline-flex;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  background: #fff; border-radius: 50%;
+  border: 1px solid #e5e5e5; color: #555;
+}
+
 .nav-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-}
-
-.info-icon {
-  background-color: white;
-  border: 1px solid #e5e5e5;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #555;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* --- Home Page Container --- */
@@ -195,6 +195,61 @@
   background-color: #f9fafb;
   border-color: #ccc;
 }
+
+/* --- Chat view (when active) --- */
+.chat-view-container {
+  position: absolute; inset: 0; padding-top: 6rem; padding-bottom: 1rem;
+  display: flex; flex-direction: column; gap: 0.75rem; align-items: center;
+}
+
+/* Message row + avatar layout */
+.message-list { width: 100%; max-width: 760px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; padding: 0; }
+.message-row { display: flex; align-items: flex-start; gap: 0.4rem; position: relative; }
+.message-row.user { justify-content: flex-end; }
+.message-row.ai { justify-content: flex-start; gap: 0.4rem; /* no left padding globally */ }
+/* Avatar defaults to inline position; per-page overrides can reposition */
+.avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display: block; }
+
+/* --- Message Bubbles --- */
+.msg-bubble {
+  max-width: 90%;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.msg-bubble.user {
+  align-self: flex-end;
+  background: #4f46e5; /* Indigo like the Hire CTA */
+  color: #ffffff;
+  border: none;
+  /* Smaller size for blue user bubble */
+  max-width: 70%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 10px;
+}
+.msg-bubble.user a { color: #ffffff; text-decoration: underline; }
+.msg-bubble.user code { background: rgba(255,255,255,0.15); color: #fff; padding: 0.1rem 0.25rem; border-radius: 6px; }
+
+.msg-bubble.ai {
+  align-self: flex-start;
+  background: #ffffff;
+  border: 1px solid #eee;
+  color: #1a1a1a;
+}
+/* Keep typing indicator subtle */
+.typing { color: #666; font-size: 0.9rem; padding: 0.5rem; }
+
+.chat-view-input {
+  display: flex; width: 100%; max-width: 760px; background: white;
+  border-radius: 9999px; padding: 0.5rem;
+  border: 1px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+  align-items: center; margin: 0 1rem 1rem;
+}
+.chat-view-input input { flex: 1; border: none; background: transparent; padding: 0.5rem 1rem; font-size: 1rem; outline: none; }
+.chat-view-input button { background-color: #193a87; color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 /* --- Footer --- */
 .home-footer {

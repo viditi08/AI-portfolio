@@ -1,38 +1,27 @@
-import React, { useRef, useEffect, useState, memo } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import WebGLFluid from 'webgl-fluid';
 
 function FluidCanvas() {
   const canvasRef = useRef(null);
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight
-  });
+  const inited = useRef(false);
 
+  // Initialize fluid once
   useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
     const canvas = canvasRef.current;
-    canvas.width = dimensions.width;
-    canvas.height = dimensions.height;
+    if (!canvas || inited.current) return;
+    inited.current = true;
 
+    // Size once at mount
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Disable interaction to avoid pointer errors and keep UI clickable
     const config = {
       TRANSPARENT: true,
       BACK_COLOR: { r: 0, g: 0, b: 0, a: 0 },
-      TRIGGER: 'hover',
+      TRIGGER: 'none', // no pointer handling
       SIM_RESOLUTION: 128,
-      DYE_RESOLUTION: 1024,
+      DYE_RESOLUTION: 512,
       DENSITY_DISSIPATION: 0.97,
       VELOCITY_DISSIPATION: 0.98,
       PRESSURE_DISSIPATION: 0.8,
@@ -43,36 +32,47 @@ function FluidCanvas() {
       COLORFUL: true,
       PAUSED: false,
       BLOOM: true,
-      BLOOM_ITERATIONS: 8,
+      BLOOM_ITERATIONS: 6,
       BLOOM_RESOLUTION: 256,
-      BLOOM_INTENSITY: 0.8,
+      BLOOM_INTENSITY: 0.7,
       BLOOM_THRESHOLD: 0.6,
       BLOOM_SOFT_KNEE: 0.7,
       SUNRAYS: true,
-      SUNRAYS_RESOLUTION: 196,
+      SUNRAYS_RESOLUTION: 128,
       SUNRAYS_WEIGHT: 1.0,
     };
 
     WebGLFluid(canvas, config);
-  }, [dimensions]);
+  }, []);
+
+  // Resize canvas without re-initializing the simulation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
+        inset: 0,
         width: '100%',
         height: '100%',
         zIndex: -1,
-        background: 'transparent'
+        background: 'transparent',
+        pointerEvents: 'none', // ensure background never blocks clicks
       }}
     />
   );
 }
 
-// React.memo prevents unnecessary re-renders
 const FluidBackground = memo(FluidCanvas);
-
 export default FluidBackground;

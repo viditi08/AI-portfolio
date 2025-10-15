@@ -8,6 +8,8 @@ import ContactPage from './ContactPage.jsx';   // Make sure this is imported
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ResumePage from './ResumePage.jsx'; 
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -15,21 +17,18 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('home'); // This state controls which page is visible
   const [isChatMode, setIsChatMode] = useState(false);
-  
-  // The 'isHireModalOpen' state is no longer needed because 'HirePage' is a full page, not a modal.
-  // We will remove it.
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
-    if (!isChatMode) setIsChatMode(true);
+    if (!isChatMode && currentPage === 'home') setIsChatMode(true);
 
     const userMessage = { text: messageText, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
-setInput('');
+    setInput('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/ask', {
+      const response = await axios.post('/ask', {
         question: messageText,
       });
       const aiMessage = { text: response.data.answer, sender: 'ai' };
@@ -52,7 +51,6 @@ setInput('');
     sendMessage(suggestion);
   };
 
-  // --- CORRECTED function to handle page switching for all links ---
   const handleNavClick = (page) => {
     setCurrentPage(page);
   };
@@ -63,7 +61,28 @@ setInput('');
       "Let's start with a joke"
   ];
 
-  // This is your existing home page content, now correctly used
+  const MessageBubble = ({ msg }) => (
+    <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
+      <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          code({node, inline, className, children, ...props}) {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div" {...props}>
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>{children}</code>
+            );
+          }
+        }}
+      >
+        {msg.text}
+      </ReactMarkdown>
+    </div>
+  );
+
   const renderHomePage = () => (
     <motion.div
       key="home"
@@ -73,6 +92,7 @@ setInput('');
       transition={{ duration: 0.3 }}
     >
       <nav className="top-nav">
+        <div className="brand" onClick={() => handleNavClick('home')}>Viditi Vartak</div>
         <div className="nav-links">
           <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
             <span className="nav-dot" style={{backgroundColor: '#3b82f6'}}></span>Looking to hire?
@@ -85,9 +105,9 @@ setInput('');
           </a>
         </div>
         <div className="nav-right">
-             <button className="info-icon" title="About this page">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z"/></svg>
-             </button>
+          <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-icon top">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="22" height="22"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg>
+          </a>
         </div>
       </nav>
 
@@ -128,15 +148,30 @@ setInput('');
               ))}
             </div>
           </div>
-          <footer className="home-footer">
-            <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="24" height="24"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg>
-            </a>
-          </footer>
         </div>
       ) : (
         <div className="chat-view-container">
-           {/* Your main chat view will render here */}
+          <div className="message-list">
+            {messages.map((m, idx) => (
+              <div key={idx} className={`message-row ${m.sender}`}>
+                {m.sender === 'ai' && (
+                  <img className="avatar ai" src="/avatar.png" alt="Viditi avatar" />
+                )}
+                <MessageBubble msg={m} />
+              </div>
+            ))}
+            {isLoading && <div className="typing">Thinking…</div>}
+          </div>
+          <form className="chat-view-input" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask me anything..."
+              disabled={isLoading}
+            />
+            <button type="submit" disabled={!input.trim() || isLoading}>→</button>
+          </form>
         </div>
       )}
     </motion.div>
@@ -144,15 +179,19 @@ setInput('');
 
   return (
     <div className="App">
-        <FluidBackground />
+        {currentPage === 'home' && <FluidBackground />}
         <AnimatePresence mode="wait">
           {currentPage === 'home' && renderHomePage()}
-          {currentPage === 'contact' && <ContactPage key="contact" onClose={() => setCurrentPage('home')} />}
-          {currentPage === 'hire' && <HirePage key="hire" onClose={() => setCurrentPage('home')} />}
-          {currentPage === 'resume' && <ResumePage key="resume" onClose={() => setCurrentPage('home')} />}
+          {currentPage === 'contact' && (
+            <ContactPage key="contact" onClose={() => setCurrentPage('home')} />
+          )}
+          {currentPage === 'hire' && (
+            <HirePage key="hire" onClose={() => setCurrentPage('home')} />
+          )}
+          {currentPage === 'resume' && (
+            <ResumePage key="resume" onClose={() => setCurrentPage('home')} />
+          )}
         </AnimatePresence>
-        
-        {/* The HireMeModal component is no longer used for a full page and can be removed if you don't need it as a pop-up elsewhere */}
     </div>
   );
 }

@@ -91,3 +91,17 @@
 }
 .experience-item ul { list-style-type: disc; padding-left: 20px; margin-top: 0.5rem; }
 .experience-item li { margin-bottom: 0.25rem; color: #555; line-height: 1.5; }
+
+.chat-messages-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0.75rem auto 0 auto;
+  padding: 0;
+}
+.chat-messages-container .message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem; /* space from previous content */
+  padding: 0;
+}

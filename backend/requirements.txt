@@ -1,4 +1,10 @@
 fastapi
-uvicorn
-anthropic
+uvicorn[standard]
 python-dotenv
+anthropic
+langchain
+langchain-community
+langchain-anthropic
+chromadb
+torch --extra-index-url https://download.pytorch.org/whl/cpu
+sentence-transformers
