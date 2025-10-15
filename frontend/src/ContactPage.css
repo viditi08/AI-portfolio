@@ -48,7 +48,9 @@
   padding: 1rem 1rem 2rem 1rem;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center;
+  gap: 1rem;
 }
 .contact-card-container {
   background: white;
@@ -60,6 +62,19 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   padding: 2rem;
   box-sizing: border-box;
+}
+/* Messages block below the card, aligned to same width and edges */
+.chat-messages-container {
+  width: 100%;
+  max-width: 650px; /* match the card width */
+  margin: 0.75rem auto 0 auto; /* space from card */
+  padding: 0; /* remove side padding */
+}
+.chat-messages-container .message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0; /* ensure no extra left/right padding */
 }
 .contact-card-header { display: flex; align-items: center; gap: 1rem; position: relative; margin-bottom: 1.5rem; }
 .contact-card-header img { width: 40px; height: 40px; border-radius: 50%; }

@@ -2,20 +2,39 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import rehypeRaw from 'rehype-raw';
 import './ResumePage.css'; // We will create this CSS file next
 
-const ResumePage = ({ onClose }) => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const ResumePage = ({
+  onClose,
+  messages: messagesProp,
+  setMessages: setMessagesProp,
+  input: inputProp,
+  setInput: setInputProp,
+  isLoading: isLoadingProp,
+  setIsLoading: setIsLoadingProp,
+  sendMessage: sendMessageProp,
+}) => {
+  const [localMessages, setLocalMessages] = useState([]);
+  const [localInput, setLocalInput] = useState('');
+  const [localIsLoading, setLocalIsLoading] = useState(false);
 
-  const sendMessage = async (messageText) => {
+  const messages = messagesProp ?? localMessages;
+  const setMessages = setMessagesProp ?? setLocalMessages;
+  const input = inputProp ?? localInput;
+  const setInput = setInputProp ?? setLocalInput;
+  const isLoading = isLoadingProp ?? localIsLoading;
+  const setIsLoading = setIsLoadingProp ?? setLocalIsLoading;
+
+  const internalSendMessage = async (messageText) => {
     if (!messageText.trim() || isLoading) return;
     setMessages(prev => [...prev, { text: messageText, sender: 'user' }]);
     setInput('');
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/ask', { question: messageText });
+      const response = await axios.post('/ask', { question: messageText });
       setMessages(prev => [...prev, { text: response.data.answer, sender: 'ai' }]);
     } catch (error) {
       setMessages(prev => [...prev, { text: "Sorry, I'm having trouble connecting.", sender: 'ai' }]);
@@ -24,12 +43,36 @@ const ResumePage = ({ onClose }) => {
     }
   };
 
+  const sendMessage = sendMessageProp ?? internalSendMessage;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage(input);
   };
 
   const initialPrompts = ["Tell me about your experience at LendAPI", "What is SkySpark?", "What are your certifications?"];
+
+  const MessageBubble = ({ msg }) => (
+    <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
+      <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          code({node, inline, className, children, ...props}) {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div" {...props}>
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>{children}</code>
+            );
+          }
+        }}
+      >
+        {msg.text}
+      </ReactMarkdown>
+    </div>
+  );
 
   return (
     <motion.div
@@ -82,6 +125,21 @@ const ResumePage = ({ onClose }) => {
             <p>Built an AI-powered platform using React.js, Flask, and Gemini via LangChain to analyze resumes and job descriptions, visualizing skill matches and suggesting improvements.</p>
           </div>
         </div>
+
+        {/* Messages list */}
+        <div className="chat-messages-container">
+          <div className="message-list">
+            {messages.map((m, idx) => (
+              <div key={idx} className={`message-row ${m.sender}`}>
+                {m.sender === 'ai' && (
+                  <img className="avatar ai" src="/avatar.png" alt="Viditi avatar" />
+                )}
+                <MessageBubble msg={m} />
+              </div>
+            ))}
+            {isLoading && <div className="typing">Thinking…</div>}
+          </div>
+        </div>
       </div>
 
       <div className="bottom-chat-interface">
@@ -102,7 +160,7 @@ const ResumePage = ({ onClose }) => {
               disabled={isLoading}
             />
             <button type="submit" disabled={!input.trim() || isLoading}>
-              +
+              →
             </button>
           </form>
         </div>
