@@ -49,6 +49,7 @@ coverage
 
 # Python virtual environments
 .venv/
+backend/.venv311/
 venv/
 env/
 ENV/
