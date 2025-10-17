@@ -1,3 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
 fastapi
 uvicorn[standard]
 python-dotenv
@@ -6,5 +7,6 @@ langchain
 langchain-community
 langchain-anthropic
 chromadb
-torch --extra-index-url https://download.pytorch.org/whl/cpu
+pypdf
+torch
 sentence-transformers

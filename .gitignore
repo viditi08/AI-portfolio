@@ -47,8 +47,15 @@ build
 coverage
 .nyc_output
 
-# Python
-**/__pycache__/
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
 
 # Vector DB (Chroma)
 backend/chroma_db/

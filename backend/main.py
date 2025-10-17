@@ -1,4 +1,5 @@
 import os
+import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -44,52 +45,106 @@ async def startup_event():
     """
     global rag_chain
     print("🚀 Server starting up...")
-    
-    # 1. Load Documents
-    print("   1. Loading documents from './data'...")
-    pdf_loader = DirectoryLoader("./data", glob="**/*.pdf", loader_cls=PyPDFLoader)
-    txt_loader = DirectoryLoader("./data", glob="**/*.txt", loader_cls=TextLoader)
-    pdf_docs = pdf_loader.load()
-    txt_docs = txt_loader.load()
-    all_docs = pdf_docs + txt_docs
-    print(f"   ✅ Loaded {len(all_docs)} documents.")
 
-    # 2. Split Documents into Chunks
-    print("   2. Splitting documents into chunks...")
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
-    splits = text_splitter.split_documents(all_docs)
-    print(f"   ✅ Created {len(splits)} document chunks.")
+    persist_dir = "./chroma_db"
 
-    # 3. Create Embeddings and Vector Store (Persisted)
-    print("   3. Initializing embedding model (all-mpnet-base-v2)...")
-    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
-    
-    print("   4. Creating/persisting vector store (ChromaDB)...")
-    vectorstore = Chroma.from_documents(
-        documents=splits,
-        embedding=embedding_model,
-        collection_name="portfolio",
-        persist_directory="./chroma_db",
-    )
-    vectorstore.persist()
-    print("   ✅ Vector store ready.")
+    # 1. Initialize fast embedding model
+    print("   1. Initializing embedding model (all-MiniLM-L6-v2 for speed)...")
+    embedding_model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_model = HuggingFaceEmbeddings(model_name=embedding_model_name)
 
-    # 4. Configure retriever (MMR for better diversity)
+    # Determine embedding dimension and create a model-specific collection name to avoid dim mismatches
+    try:
+        test_dim = len(embedding_model.embed_query("dimension probe"))
+    except Exception:
+        test_dim = 0  # fallback, though this should not happen
+    safe_model_tag = re.sub(r"[^a-zA-Z0-9_-]+", "-", embedding_model_name.split("/")[-1])
+    collection_name = f"portfolio_{safe_model_tag}_{test_dim or 'dim'}"
+
+    # 2. Load or build Vector Store (ChromaDB)
+    print("   2. Loading/creating vector store (ChromaDB)...")
+    vectorstore = None
+    if os.path.isdir(persist_dir) and os.listdir(persist_dir):
+        try:
+            vectorstore = Chroma(
+                collection_name=collection_name,
+                embedding_function=embedding_model,
+                persist_directory=persist_dir,
+            )
+            # If the collection exists but is empty, we'll rebuild below
+            print("   ✅ Loaded Chroma store (collection:", collection_name, ")")
+        except Exception as e:
+            print(f"   ⚠️ Failed to load existing vector store, will rebuild: {e}")
+
+    needs_rebuild = vectorstore is None
+    if not needs_rebuild:
+        try:
+            count = vectorstore._collection.count()  # type: ignore[attr-defined]
+            if not count:
+                needs_rebuild = True
+                print("   ℹ️ Collection is empty; will (re)build from ./data ...")
+            else:
+                print(f"   ✅ Collection has {count} vectors.")
+        except Exception as e:
+            print(f"   ⚠️ Could not determine collection size, will (re)build: {e}")
+            needs_rebuild = True
+
+    if needs_rebuild:
+        print("   → Building vector store from ./data ...")
+        # Load Documents only if we need to (first run or rebuild)
+        pdf_loader = DirectoryLoader("./data", glob="**/*.pdf", loader_cls=PyPDFLoader)
+        txt_loader = DirectoryLoader("./data", glob="**/*.txt", loader_cls=TextLoader)
+        pdf_docs = pdf_loader.load()
+        txt_docs = txt_loader.load()
+        all_docs = pdf_docs + txt_docs
+        print(f"   ✅ Loaded {len(all_docs)} documents.")
+
+        # Split Documents into Chunks (smaller for faster context stuffing)
+        print("   → Splitting documents into chunks...")
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+        splits = text_splitter.split_documents(all_docs)
+        print(f"   ✅ Created {len(splits)} document chunks.")
+
+        # Create & persist vector store
+        vectorstore = Chroma.from_documents(
+            documents=splits,
+            embedding=embedding_model,
+            collection_name=collection_name,
+            persist_directory=persist_dir,
+        )
+        vectorstore.persist()
+        print("   ✅ Vector store ready.")
+
+    # 3. Configure retriever (lower k for speed)
     retriever = vectorstore.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 6, "fetch_k": 24, "lambda_mult": 0.5},
+        search_type="similarity",
+        search_kwargs={"k": 3},
     )
 
-    # 5. Initialize the LLM (Claude)
-    print("   5. Initializing LLM (Claude 3.5 Sonnet)...")
-    llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0.2, max_tokens=600)
-    print("   ✅ LLM initialized.")
+    # 4. Initialize the LLM (Claude - fast default)
+    print("   3. Initializing LLM (Claude 3 Haiku by default)...")
+    model_name = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
+    # Map common aliases to concrete versioned model names to avoid 404s
+    model_aliases = {
+        "claude-3-haiku-latest": "claude-3-haiku-20240307",
+        "haiku-latest": "claude-3-haiku-20240307",
+        "claude-3-sonnet-latest": "claude-3-sonnet-20240229",
+        "sonnet-latest": "claude-3-sonnet-20240229",
+        "claude-3-opus-latest": "claude-3-opus-20240229",
+        "opus-latest": "claude-3-opus-20240229",
+        "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20240620",
+        "sonnet-3.5-latest": "claude-3-5-sonnet-20240620",
+    }
+    model_name = model_aliases.get(model_name, model_name)
+    llm = ChatAnthropic(model=model_name, temperature=0.1, max_tokens=300)
+    print(f"   ✅ LLM initialized: {model_name}")
     
-    # 6. Create a strict prompt for QA
+    # 5. Create a strict, punchy prompt for QA
     system_instructions = (
-        "You are Viditi's AI portfolio assistant. Use only the provided context to answer. "
-        "If the answer isn't in the context, say you don't know. Be concise, friendly, and helpful. "
-        "Prefer bullet points when listing items. Use links if present in the context."
+        "You are Viditi's AI portfolio assistant. Use only the provided context. "
+        "Be crisp, confident, and direct—no prefaces or hedging. "
+        "Answer in 1–3 sentences unless a list is needed. If the answer isn't in the context, say you don't know. "
+        "Prefer short bullet points for lists. Include links if present in the context."
     )
     prompt = PromptTemplate(
         template=(
@@ -103,13 +158,13 @@ async def startup_event():
         partial_variables={"system": system_instructions},
     )
 
-    # 7. Create the RAG Chain with custom prompt
-    print("   6. Creating RAG chain...")
+    # 6. Create the RAG Chain with custom prompt (no sources for less overhead)
+    print("   4. Creating RAG chain...")
     rag_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
         retriever=retriever,
-        return_source_documents=True,
+        return_source_documents=False,
         chain_type_kwargs={"prompt": prompt},
     )
     print("✅ RAG chain created successfully!")
@@ -119,6 +174,22 @@ async def startup_event():
 class Query(BaseModel):
     question: str
 
+# --- Helpers ---
+def _clean_answer(text: str) -> str:
+    patterns = [
+        r"^\s*(based on (the )?(provided )?context[:,]?\s*)",
+        r"^\s*(from (the )?context[:,]?\s*)",
+        r"^\s*(according to (the )?(provided )?context[:,]?\s*)",
+        r"^\s*(here( is|’s|'s)? (a )?(summary|overview)[:,]?\s*)",
+        r"^\s*(in summary[:,]?\s*)",
+        r"^\s*(overall[:,]?\s*)",
+        r"^\s*(to (summarize|sum up)[:,]?\s*)",
+    ]
+    cleaned = text or ""
+    for p in patterns:
+        cleaned = re.sub(p, "", cleaned, flags=re.IGNORECASE)
+    return cleaned.strip()
+
 @app.post("/ask")
 def ask_question(query: Query):
     if not rag_chain:
@@ -127,7 +198,10 @@ def ask_question(query: Query):
     try:
         # Run the user's question through the RAG chain
         result = rag_chain.invoke({"query": query.question})
-        return {"answer": result['result']}
+        # RetrievalQA returns a dict with key 'result' when return_source_documents=False
+        answer = result.get('result', '') if isinstance(result, dict) else str(result)
+        answer = _clean_answer(answer)
+        return {"answer": answer}
         
     except Exception as e:
         print(f"An error occurred during query processing: {e}")
