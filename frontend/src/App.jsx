@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion'; // For animations
 import FluidBackground from './FluidBackground';
@@ -17,20 +17,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('home'); // This state controls which page is visible
   const [isChatMode, setIsChatMode] = useState(false);
-
-  // Auto-scroll to bottom when new messages arrive (Home chat)
-  const messageListRef = useRef(null);
-  useEffect(() => {
-    if (messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-  }, [messages, isLoading]);
-
-  const endChat = () => {
-    setMessages([]);
-    setInput('');
-    setIsChatMode(false);
-  };
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -107,19 +93,17 @@ function App() {
     >
       <nav className="top-nav">
         <div className="brand" onClick={() => handleNavClick('home')}>Viditi Vartak</div>
-        {!isChatMode && (
-          <div className="nav-links">
-            <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
-              <span className="nav-dot" style={{backgroundColor: '#3b82f6'}}></span>Looking to hire?
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
-              <span className="nav-dot" style={{backgroundColor: '#10b981'}}></span>Contact
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('resume'); }}>
-              <span className="nav-dot" style={{backgroundColor: '#f59e0b'}}></span>Resume
-            </a>
-          </div>
-        )}
+        <div className="nav-links">
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('hire'); }}>
+            <span className="nav-dot" style={{backgroundColor: '#3b82f6'}}></span>Looking to hire?
+          </a>
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
+             <span className="nav-dot" style={{backgroundColor: '#10b981'}}></span>Contact
+          </a>
+          <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('resume'); }}>
+             <span className="nav-dot" style={{backgroundColor: '#f59e0b'}}></span>Resume
+          </a>
+        </div>
         <div className="nav-right">
           <a href="https://www.linkedin.com/in/viditi-vartak" target="_blank" rel="noopener noreferrer" className="linkedin-icon top">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="22" height="22"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg>
@@ -131,14 +115,25 @@ function App() {
         <div className="home-container">
           <div className="hero-section">
             <div className="hero-content">
-              <h1 className="hero-title">Viditi Ai Portfolio</h1>
+              <h1 className="hero-title">Viditi Portfolio</h1>
               <p className="hero-subtitle">Built using data from my life.</p>
               <img src="/avatar.png" alt="Viditi Vartak" className="hero-avatar" />
             </div>
           </div>
 
           <div className="chat-section">
-             <form className="input-form" onSubmit={handleSubmit}>
+            {/* Fixed suggestions above input */}
+            <div className="suggestions suggestions-fixed">
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  className="suggestion-pill"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  disabled={isLoading}
+                >{suggestion}</button>
+              ))}
+            </div>
+            <form className="input-form" onSubmit={handleSubmit}>
               <input
                 type="text"
                 value={input}
@@ -153,23 +148,11 @@ function App() {
                 disabled={isLoading || !input.trim()}
               >→</button>
             </form>
-            <div className="suggestions">
-              {suggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  className="suggestion-pill"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  disabled={isLoading}
-                >{suggestion}</button>
-              ))}
-            </div>
           </div>
         </div>
       ) : (
         <div className="chat-view-container">
-          {/* Close chat (X) like other pages */}
-          <button className="home-chat-close-btn" onClick={endChat} aria-label="Close chat" disabled={isLoading}>×</button>
-          <div className="message-list" ref={messageListRef}>
+          <div className="message-list">
             {messages.map((m, idx) => (
               <div key={idx} className={`message-row ${m.sender}`}>
                 {m.sender === 'ai' && (
@@ -180,7 +163,17 @@ function App() {
             ))}
             {isLoading && <div className="typing">Thinking…</div>}
           </div>
-          {/* Always show typing input in chat mode */}
+          {/* Fixed suggestions above chat input in chat view */}
+          <div className="suggestions suggestions-fixed">
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                className="suggestion-pill"
+                onClick={() => handleSuggestionClick(suggestion)}
+                disabled={isLoading}
+              >{suggestion}</button>
+            ))}
+          </div>
           <form className="chat-view-input" onSubmit={handleSubmit}>
             <input
               type="text"
