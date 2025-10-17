@@ -53,6 +53,7 @@ coverage
 .venv*
 venv/
 backend/.venv*
+.venv311/
 
 
 # Vector DB (Chroma)
