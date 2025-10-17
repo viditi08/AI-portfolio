@@ -48,15 +48,12 @@ coverage
 .nyc_output
 
 # Python virtual environments
-.venv/
-backend/.venv311/
+
+# Virtual environments
+.venv*
 venv/
-env/
-ENV/
-backend/.venv/
-backend/venv/
-backend/env/
-backend/ENV/
+backend/.venv*
+
 
 # Vector DB (Chroma)
 backend/chroma_db/
