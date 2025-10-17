@@ -1,0 +1,65 @@
+.contact-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(248, 249, 250, 0.85); 
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.contact-modal-content {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 700px;
+  position: relative;
+  outline: none;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+.contact-modal-close-btn {
+  position: absolute; top: 1rem; right: 1rem;
+  background: #f0f0f0; border: none; border-radius: 50%;
+  width: 36px; height: 36px; font-size: 1.4rem;
+  color: #555; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+}
+
+.contact-header {
+  display: flex; align-items: center; gap: 1rem;
+  position: relative;
+}
+.contact-avatar { width: 40px; height: 40px; border-radius: 50%; }
+.contact-name { margin: 0; font-size: 1.25rem; font-weight: 600; color: #1a1a1a; }
+.contact-subtitle { margin: 0; color: #555; font-size: 0.9rem; }
+
+.contact-status-badge {
+  position: absolute; top: 0; right: 0;
+  background-color: rgba(22, 163, 74, 0.1); color: #15803d;
+  padding: 0.25rem 0.75rem; border-radius: 99px;
+  font-size: 0.8rem; font-weight: 500;
+}
+
+.contact-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 3rem;
+  margin-top: 2rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.contact-icon { font-size: 1.25rem; }
+.contact-item strong { display: block; font-weight: 500; color: #555; font-size: 0.9rem; }
+.contact-item a, .contact-item p {
+  font-size: 0.9rem; color: #1a1a1a;
+  text-decoration: none; margin: 0;
+}
+.contact-item a:hover { text-decoration: underline; }
