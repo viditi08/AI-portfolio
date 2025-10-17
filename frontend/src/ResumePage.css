@@ -1,0 +1,107 @@
+.resume-page-wrapper {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #f8f9fa;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.resume-page-scroll-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+}
+
+.resume-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.resume-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.download-btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+.download-btn:hover { background-color: #4338ca; }
+
+.resume-page-close-btn {
+  position: absolute;
+  top: 0;
+  right: -50px; /* Position it outside the main content flow */
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.resume-section {
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+.resume-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+.resume-section p { color: #555; line-height: 1.6; }
+
+.experience-item, .project-item { margin-bottom: 1.5rem; }
+.experience-item h4, .project-item h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+.experience-item span {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0.25rem 0 0.5rem;
+  display: block;
+}
+.experience-item ul { list-style-type: disc; padding-left: 20px; margin-top: 0.5rem; }
+.experience-item li { margin-bottom: 0.25rem; color: #555; line-height: 1.5; }
+
+.chat-messages-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0.75rem auto 0 auto;
+  padding: 0;
+}
+.chat-messages-container .message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem; /* space from previous content */
+  padding: 0;
+}

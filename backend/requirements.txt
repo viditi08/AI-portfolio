@@ -1,0 +1,12 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi
+uvicorn[standard]
+python-dotenv
+anthropic
+langchain
+langchain-community
+langchain-anthropic
+chromadb
+pypdf
+torch
+sentence-transformers
