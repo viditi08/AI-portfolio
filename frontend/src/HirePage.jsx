@@ -97,23 +97,23 @@ const HirePage = ({
           </div>
           <div className="details-grid">
             <div><span>Duration</span>Full-time - Immediate</div>
-            <div><span>Location</span>San Jose, CA - Remote friendly</div>
+            <div><span>Location</span>San Jose, CA, Open to relocation</div>
           </div>
           <div className="detail-section">
             <h3><span role="img" aria-label="code">💻</span> Tech Stack</h3>
             <div className="tech-stack-grid">
-              <ul><li>Java</li><li>Next.js</li><li>Spring Boot</li><li>AWS</li></ul>
-              <ul><li>Python</li><li>Docker</li><li>JavaScript</li><li>Kubernetes</li></ul>
+              <ul><li>Java</li><li>Python</li><li>Spring Boot</li><li>AWS</li></ul>
+              <ul><li>Node.js</li><li>Docker</li><li>JavaScript</li><li>Kubernetes</li></ul>
               <ul><li>React.js</li><li>Apache Spark</li><li>Node.js</li><li>MongoDB</li></ul>
             </div>
           </div>
           <div className="detail-section">
             <h3><span role="img" aria-label="checkmark">✔️</span> What I Bring</h3>
             <ul className="value-list">
-              <li>Shipped production AI features</li>
-              <li>Full Stack Development experience</li>
-              <li>Hackathons + rapid prototyping</li>
-              <li>Product-first thinking and User-centered design</li>
+              <li>Full-stack development across React, FastAPI, Django REST, and AWS</li>
+              <li>Rapid prototyping and agile feature delivery</li>
+              <li>User-centered problem solving</li>
+              <li>Scalable system design and deployment experience</li>
             </ul>
           </div>
           <div className="modal-actions">
