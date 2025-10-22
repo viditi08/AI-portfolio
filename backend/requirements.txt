@@ -11,3 +11,4 @@ pypdf
 torch
 sentence-transformers
 langchain
+langchain-text-splitters
