@@ -10,3 +10,4 @@ chromadb
 pypdf
 torch
 sentence-transformers
+langchain
