@@ -7,6 +7,8 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import rehypeRaw from 'rehype-raw';
 import './HirePage.css';
 
+const API_BASE = "https://viditi-viditi-portfolio-backend.hf.space";
+
 const HirePage = ({
   onClose,
   messages: messagesProp,
@@ -35,7 +37,7 @@ const HirePage = ({
     setInput('');
     setIsLoading(true);
     try {
-      const response = await axios.post('/ask', { question: messageText });
+      const response = await axios.post(`${API_BASE}/ask`, { question: messageText });
       setMessages(prev => [...prev, { text: response.data.answer, sender: 'ai' }]);
     } catch (error) {
       setMessages(prev => [...prev, { text: "Sorry, I'm having trouble connecting.", sender: 'ai' }]);

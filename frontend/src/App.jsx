@@ -11,6 +11,8 @@ import ResumePage from './ResumePage.jsx';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 
+const API_BASE = "https://viditi-viditi-portfolio-backend.hf.space";
+
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -45,7 +47,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/ask', {
+      const response = await axios.post(`${API_BASE}/ask`, {
         question: messageText,
       });
       const aiMessage = { text: response.data.answer, sender: 'ai' };

@@ -24,7 +24,7 @@ const ContactModal = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/ask', { question: messageText });
+      const response = await axios.post('https://viditi-viditi-portfolio-backend.hf.space/ask', { question: messageText });
       const aiMessage = { text: response.data.answer, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
