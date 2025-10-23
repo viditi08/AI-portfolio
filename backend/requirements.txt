@@ -1,4 +1,4 @@
-# Force re-build v1
+# v4 cache break
 --extra-index-url https://download.pytorch.org/whl/cpu
 fastapi
 uvicorn[standard]
@@ -11,5 +11,4 @@ chromadb
 pypdf
 torch
 sentence-transformers
-langchain
 langchain-text-splitters
