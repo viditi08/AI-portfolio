@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,8 +15,9 @@ from langchain_anthropic import ChatAnthropic
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from backend/.env (local) or Space secrets (HF)
+_ENV_PATH = Path(__file__).resolve().parent / ".env"
+load_dotenv(_ENV_PATH)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # --- FastAPI App Setup ---
@@ -122,21 +124,37 @@ async def startup_event():
     )
 
     # 4. Initialize the LLM (Claude - fast default)
-    print("   3. Initializing LLM (Claude 3 Haiku by default)...")
-    model_name = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
-    # Map common aliases to concrete versioned model names to avoid 404s
+    print("   3. Initializing LLM (Claude Haiku by default)...")
+    api_key = (os.getenv("ANTHROPIC_API_KEY") or "").strip().strip('"').strip("'")
+    if not api_key:
+        raise RuntimeError(
+            "ANTHROPIC_API_KEY is missing. Add it to backend/.env locally, "
+            "or as a Hugging Face Space secret named ANTHROPIC_API_KEY."
+        )
+
+    model_name = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5")
+    # Map common / retired aliases to current model IDs
     model_aliases = {
-        "claude-3-haiku-latest": "claude-3-haiku-20240307",
-        "haiku-latest": "claude-3-haiku-20240307",
-        "claude-3-sonnet-latest": "claude-3-sonnet-20240229",
-        "sonnet-latest": "claude-3-sonnet-20240229",
-        "claude-3-opus-latest": "claude-3-opus-20240229",
-        "opus-latest": "claude-3-opus-20240229",
-        "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20240620",
-        "sonnet-3.5-latest": "claude-3-5-sonnet-20240620",
+        "claude-3-haiku-latest": "claude-haiku-4-5",
+        "claude-3-haiku-20240307": "claude-haiku-4-5",
+        "haiku-latest": "claude-haiku-4-5",
+        "haiku": "claude-haiku-4-5",
+        "claude-3-sonnet-latest": "claude-sonnet-5",
+        "sonnet-latest": "claude-sonnet-5",
+        "sonnet": "claude-sonnet-5",
+        "claude-3-opus-latest": "claude-opus-5",
+        "opus-latest": "claude-opus-5",
+        "opus": "claude-opus-5",
+        "claude-3-5-sonnet-latest": "claude-sonnet-5",
+        "sonnet-3.5-latest": "claude-sonnet-5",
     }
     model_name = model_aliases.get(model_name, model_name)
-    llm = ChatAnthropic(model=model_name, temperature=0.1, max_tokens=300)
+    llm = ChatAnthropic(
+        model=model_name,
+        api_key=api_key,
+        temperature=0.1,
+        max_tokens=300,
+    )
     print(f"   ✅ LLM initialized: {model_name}")
     
     # 5. Create a strict, punchy prompt for QA
@@ -205,4 +223,19 @@ def ask_question(query: Query):
         
     except Exception as e:
         print(f"An error occurred during query processing: {e}")
+        err = str(e).lower()
+        if "api_key" in err or "authentication" in err or "unauthorized" in err:
+            return {
+                "answer": (
+                    "Anthropic API key is missing or invalid. "
+                    "Set ANTHROPIC_API_KEY in backend/.env or as a Hugging Face Space secret."
+                )
+            }
+        if "not_found" in err or "model:" in err:
+            return {
+                "answer": (
+                    "The configured Anthropic model is unavailable. "
+                    "Update ANTHROPIC_MODEL (e.g. claude-haiku-4-5)."
+                )
+            }
         return {"answer": "Sorry, I encountered an error while processing your request."}

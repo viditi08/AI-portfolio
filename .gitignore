@@ -10,7 +10,6 @@ lerna-debug.log*
 # Dependencies
 node_modules
 **/node_modules/
-**/node_modules/**
 /.pnp
 .pnp.js
 
@@ -20,18 +19,20 @@ dist-ssr
 build
 *.local
 
-# Environment files
+# Environment files (keep .env.example)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+**/.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
@@ -43,11 +44,14 @@ build
 .npm
 .eslintcache
 
-# Coverage and test outputs
-coverage
-.nyc_output
-
-# Python virtual environments
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
 
 # Virtual environments
 .venv*
@@ -55,6 +59,6 @@ venv/
 backend/.venv*
 .venv311/
 
-
 # Vector DB (Chroma)
 backend/chroma_db/
+**/chroma_db/
