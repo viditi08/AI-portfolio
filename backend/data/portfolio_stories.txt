@@ -1,71 +1,139 @@
-🧠 Work Experience
-Building intelligence into lending — My journey at LendAPI
+FRONTEND PROFILE
+Viditi Vartak is a software engineer based in San Jose, CA. She builds product experiences across the stack with a strong product/UI craft — React, Vue.js, Next.js, TypeScript — plus the APIs and services that make those experiences reliable.
 
-When I joined LendAPI, I wanted to see how technology could simplify one of the most complex financial processes — loan applications. The system felt outdated: too many manual checks, too much waiting, and very little intelligence behind the workflow. That challenge excited me.
+ELEVATOR PITCH
+I'm Viditi Vartak, a software engineer in San Jose. I've shipped product experiences across Saayam For All (Vue donor dashboards and component libraries), DentalScan (React/TypeScript clinic tools with live WebSocket updates), and LendAPI (a React drag-and-drop loan application builder). Earlier, I built React insurance ops UIs at BusinessLab and mobile-friendly React features at Nibodh for 5,000+ users. I care about clear UX and reliable delivery with the teams behind the product.
 
-My first task was to help rebuild the company’s B2B loan platform from the ground up. I worked with Python and Django on the backend, connecting dozens of real-time APIs and designing secure authentication with JWT. It wasn’t just about coding; it was about creating trust in a system that handled sensitive financial data.
+DESIGN PHILOSOPHY
+I design interfaces that users actually want to use—bridging the gap between beautiful design and functional code. At Nibodh, I built React-based mobile UIs serving 5,000+ users, learning firsthand how design choices drive engagement. I combine that user-first mindset with scalable backend systems to create seamless, end-to-end experiences.
 
-As the platform evolved, I explored how AI could make the customer experience smarter. I built a customer service assistant fine-tuned with ChatGPT models — and suddenly, support queries that once took minutes were answered in seconds. Seeing automation reduce human effort without losing empathy made me realize the real value of applied AI.
+She ships production UIs and product features: component systems, data-heavy dashboards, real-time clients, and responsive layouts. She owns presentation-layer quality — state, API collaboration, performance, and UX polish — and partners closely with backend when shipping end-to-end.
 
-By the end of my internship, the product was not only faster — processing times dropped by 45% — but also smarter and more reliable. Deploying everything on AWS with CI/CD pipelines taught me how to think at scale and reinforced my curiosity for intelligent, self-learning systems.
+CONTACT INFORMATION
+Always available contact details for Viditi Vartak:
+• Email: viditivartak08@gmail.com
+• Phone: +1 (657) 525-8975
+• Location: San Jose, California
+• LinkedIn: https://linkedin.com/in/viditivartak
+• Portfolio: https://viditivartak.netlify.app
+• GitHub: https://github.com/viditi08
+When asked how to contact her, share these details clearly (email, phone, LinkedIn, location).
 
-Scaling systems, scaling myself — Lessons from BusinessLab
+FRONTEND ENGINEERING APPROACH
+Viditi builds UI as a system, not a pile of screens. Typical patterns she uses:
+• Component architecture: atomic / presentational vs container components; shared design tokens; typed props in TypeScript; Storybook-style reusable libraries for tables, forms, charts, and steppers.
+• State: local React/Vue state for UI chrome; lifted state or Context/Pinia/Redux-like stores for cross-view data; server-state via REST/WebSocket with optimistic updates and cache invalidation where latency matters.
+• Data fetching: typed REST clients, loading/error/empty states, pagination/filtering on the client for ops dashboards, debounce for search, cancel in-flight requests on route change.
+• Real-time: WebSocket subscriptions for live dashboards; reconnect + backlog handling; keep UI interactive while syncing so staff never hard-refresh.
+• Performance: code-splitting routes, memoized list/table rows, virtualization for large datasets, lazy-loaded charts, image/media deferred until needed, measuring LCP/INP-style UX pain on heavy admin pages.
+• Forms & builders: schema-driven or config-driven forms, drag-and-drop layout editors, validation at field and step level, unsaved-change guards.
+• Accessibility & responsiveness: keyboard flows for forms/tables, semantic HTML, mobile-first breakpoints, focus management in multi-step UIs.
+• Collaboration: OpenAPI/Swagger-aligned contracts, mock servers for parallel frontend work, clear loading skeletons so backend lag never feels like a broken UI.
 
-At BusinessLab, I learned what it truly means to design for scale. I joined a small team with a big goal: to modernize financial policy management through automation and modular systems. My focus was on microservice architecture using Java Spring Boot and PostgreSQL — tools that would help transform static processes into dynamic, responsive workflows.
+WORK EXPERIENCE — TECHNICAL DEPTH
 
-One of my favorite projects was automating the lead qualification pipeline. I wrote Python microservices that filtered, scored, and tracked leads in real time. What once required hours of manual review now ran autonomously — saving the team over six hours every week and improving conversion rates by 15%.
+Saayam For All — Full Stack Developer (Frontend-heavy) · San Jose, CA · Oct 2025 – Present
+Role focus: Frontend Engineer for the donor-facing product surface.
+• Rebuilt the Vue.js donor dashboard for real-time visibility into donations, recurring contributions, and financial reporting — ops time-to-insight dropped because charts/tables update without full page reloads.
+• Technical approach: Vue 3 component library with filterable data tables, multi-step forms, and chart widgets; shared composables for filters, date ranges, and currency formatting; REST contract work with backend to trim over-fetching and improve TTI/responsiveness.
+• Impact: reusable Vue primitives cut feature cycle time and reduced onboarding friction for new frontend contributors joining the codebase.
 
-But the real growth came from learning to integrate technology across systems. I used Terraform and Jenkins to automate deployments and embedded Jira into our CI/CD process. That cut deployment time by 30% and eliminated human error in production. It wasn’t glamorous work, but it was the foundation of every stable release.
+DentalScan — Software Engineer Intern · Miami, FL (Remote) · Aug – Oct 2025
+Role focus: React/TypeScript frontend for clinic operations.
+• Built patient management dashboards in React + TypeScript with live appointment and lead tracking.
+• Technical approach: strongly typed models for patients/appointments; reusable form controls and data tables; WebSocket channel so board views stay live (no manual refresh) under high clinic traffic; Twilio + Retell AI hooks surfaced as UI workflows for automated voice/SMS follow-ups (status chips, retry states, failure toasts).
+• Partnered with product/backend on API shapes so the dashboard stayed performant with dense clinic data.
 
-By the time I left, I wasn’t just writing APIs — I was thinking in systems. I had learned that scalable infrastructure is about designing for change, not just for performance. That philosophy continues to shape how I approach every new project.
+LendAPI — Software Engineer Intern · Irvine, CA (Remote) · Jun – Aug 2025
+Role focus: React product UI for lending configuration.
+• Built a drag-and-drop loan application builder in React so non-technical users configure lending workflows without code.
+• Technical approach: canvas/builder UX with draggable field blocks, dynamic form rendering from a config schema, validation rules per step, and an application management UI for origination status.
+• Shipped production-ready frontend with PMs/backend for consistent performance across lender tenants.
 
-Learning agility through iteration — My time at Jiya Nutraherbs
+BusinessLab — Software Engineer · Mumbai, India · Aug 2022 – Jul 2023
+Role focus: React frontend for insurance ops + underwriting tools.
+• Developed React interfaces: policy lifecycle dashboards, underwriting tools, operational reporting used daily by ops/underwriting.
+• Technical approach: reusable component library + REST integrations; consistent table/filter patterns across modules; when UI latency traced to data, collaborated on Django/PostgreSQL query improvements so frontend perceived reliability improved under load.
+• Reduced time-to-feature by standardizing UI primitives instead of one-off screens.
 
-At Jiya Nutraherbs, I stepped into a startup world where speed and adaptability mattered most. My role as a backend intern was to bring structure to an evolving set of e-commerce tools. I built Node.js and Express.js services to manage orders and inventory — the kind of core functionality that keeps everything running smoothly behind the scenes.
+Nibodh — Web Developer Intern · Mumbai, India · May – Oct 2019
+• Shipped 10+ features on a mobile-friendly React app that grew to 5,000+ active users.
+• Responsive React UI patterns; AWS S3/Lambda for media so the frontend could load assets faster (retrieval times down ~30%).
+• Core lesson: frontend quality is clarity of experience — hierarchy, feedback, and mobile ergonomics beat stack novelty.
 
-The technical part was exciting, but what challenged me more was learning to think like a product engineer. Every week brought a new client project, a new deployment target, and a new problem to debug. Deploying everything on AWS taught me the importance of automation — not just for efficiency, but for peace of mind.
+Jiya Nutraherbs — Software Engineer Intern · Valsad, Gujarat, India · May – Jul 2021
+• Built Node.js / Express services for order processing and inventory across client e-commerce work.
+• Helped deploy and monitor apps on AWS; learned startup pace — weekly client demos, rapid iteration, Agile delivery.
+• Story: this role sharpened product-engineer instincts — ship something usable fast, then harden it.
 
-Working in agile cycles showed me how small, continuous improvements compound over time. By the end of the internship, I understood that engineering is as much about collaboration as it is about code. That mindset prepared me for the larger, more complex systems I’d later build.
+EXPERIENCE STORIES (from LinkedIn + resume — prefer these in chat)
 
-Designing for users, not just screens — My first step at Nibodh
+Career arc
+• ~3.5+ years of engineering experience spanning India and the U.S. (San Jose).
+• Path: Nibodh (first React product growth) → Jiya Nutraherbs (Node/AWS e-commerce) → BusinessLab (~2 years shipping insurance/ops product UIs) → Master's at CSUF → LendAPI (fintech lending UI) → DentalScan (clinic ops + voice/SMS AI in the UI) → Saayam For All (nonprofit donor platform, current).
+• Theme across roles: make complex workflows feel simple for non-technical users (lenders, clinic staff, ops, donors).
 
-Nibodh was where I first learned to bridge design and development. I built mobile-friendly user interfaces using React and integrated REST APIs that served over 5,000 users. Seeing how design choices impacted engagement opened my eyes to the human side of software.
+Saayam For All story
+• Company context: nonprofit platform connecting people who need help with volunteers, organizations, and donors (global distributed team).
+• Viditi's story: joined as Full Stack Developer to modernize the donor-facing experience. Ops needed real-time visibility into donations and recurring gifts — not stale exports. She rebuilt the Vue dashboard and a reusable component library so new features didn't reinvent tables/forms/charts every sprint. She also sat with backend on REST contracts to cut over-fetching and make the UI feel snappy.
+• Why it matters: impact work + production UI craft — clarity for donors/ops, velocity for engineers.
 
-I remember optimizing AWS integrations — S3 for storage, Lambda for automation — and watching data retrieval times drop instantly. It was my first taste of cloud computing, and it made me curious about how invisible infrastructure could create visible impact.
+DentalScan story
+• Clinic staff live in the dashboard all day. Stale appointment/lead data meant missed follow-ups.
+• Viditi shipped React/TypeScript boards with WebSocket live sync (no hard refresh), plus Twilio + Retell AI follow-up flows surfaced as status chips, retries, and failure toasts in the UI.
+• Why it matters: real-time product UI under operational pressure, with AI features that feel like part of the workflow — not a bolted-on chatbot.
 
-Nibodh taught me one of the most important lessons in my journey: great software isn’t about the complexity of the stack, but the clarity of the experience. That belief still guides how I approach every feature, interface, and idea.
+LendAPI story
+• Company context: digital onboarding / lending platform for banks and fintech (multi-tenant, configurable origination).
+• Viditi built a drag-and-drop loan application builder so non-technical lenders could configure workflows without engineering tickets. Dynamic forms + application management UI shortened lender onboarding.
+• Why it matters: classic product-engineering win — give power users a builder, reduce custom engineering load.
 
-🎓 Education
-California State University, Fullerton — Where I learned to connect logic with intuition
+BusinessLab story
+• ~Aug 2021 – Jul 2023 in Mumbai: longer tenure where Viditi owned React surfaces for insurance/ops — policy lifecycle, underwriting tools, operational reporting used daily.
+• Built reusable component libraries and REST integrations to cut time-to-feature; when the UI felt slow, she dug into Django/PostgreSQL with the team so reliability improved under load.
+• Why it matters: learned to ship durable product UI in a real business domain (insurance/ops), not just greenfield demos.
 
-Pursuing my Master’s in Computer Science at CSUF has been a journey of connecting deep technical knowledge with creativity. Courses like Advanced Algorithms, Artificial Intelligence, and Distributed Systems helped me see how individual components can come together to form intelligent, resilient networks.
+Nibodh story
+• First serious web product role: shipped 10+ React features on a mobile-friendly app that grew past 5,000 active users.
+• AWS S3/Lambda for media cut retrieval times ~30% and admin overhead ~25%.
+• Why it matters: learned that engagement follows design clarity — layout, feedback, mobile ergonomics.
 
-Beyond the classroom, I’ve worked on projects that turned theory into practice — from building AI-driven applications to deploying distributed data pipelines. This program hasn’t just refined my technical foundation; it’s shaped how I think about the role of AI in designing systems that are both efficient and ethical.
+Jiya Nutraherbs story
+• Short internship in nutraceutical/e-commerce: Node/Express order & inventory services, AWS deployment, Agile client cycles.
+• Why it matters: early full-stack exposure and comfort shipping under startup constraints.
 
-💻 Projects
-SkySpark — Scaling analytics for the skies
+EDUCATION & GROWTH STORIES
+• M.S. Computer Science, California State University, Fullerton (2023–2025). Coursework: Advanced Algorithms, Distributed Systems, Artificial Intelligence, OOP — systems thinking that informs product architecture.
+• B.E. Information Technology, University of Mumbai (2020–2023).
+• Certifications: AWS Certified Data Engineer – Associate; Databricks Generative AI Fundamentals; Oracle Cloud Infrastructure 2025 Generative AI Professional; Microsoft Power BI Data Analyst Professional Certificate.
+• Community: attended Grace Hopper Celebration 2025 (Chicago / GHC’25) — women-in-tech networking and enterprise AI sessions (e.g. PayPal “Vision to Execution”); Advancing Women in Technology (AWT) panel hosted by Pacific Life; previously led/organized VCET Hackathon-style events and enjoys cross-functional collaboration.
+• Public presence: LinkedIn https://linkedin.com/in/viditivartak · Portfolio https://viditivartak.netlify.app · GitHub https://github.com/viditi08 · actively seeking impactful full-time roles building modern product platforms.
 
-SkySpark started as a curiosity: how can we process massive airline performance data efficiently? Using Kubernetes, Apache Spark, and Cassandra, I engineered a cloud-native data pipeline that could analyze flight data at scale.
+PROJECTS — TECHNICAL DEPTH (only if user asks about projects)
 
-The challenge was making it both fast and flexible. I learned how distributed computing systems handle real-world datasets — and how data visualization (through Python and Matplotlib) can transform raw numbers into insights. By the end, I had improved data accessibility by 40% and gained a deep respect for the architecture behind every scalable AI system.
+AI Portfolio Chatbot — React, Tailwind, FastAPI, LangChain, ChromaDB, Claude
+• Frontend: React chat UI with markdown rendering, suggestion chips, session-local message state, loading/typing affordances, and a fluid/animated landing shell.
+• RAG backend is supporting infrastructure; the product story is a frontend-first conversational portfolio that retrieves resume/project context and answers with grounded detail.
 
-Resume Job Matcher AI — Where career meets code
+Emma – AI Therapist — Next.js, TypeScript, WebSockets, Gemini Live, Prisma, Vercel
+• Frontend: Next.js App Router + TypeScript voice/session UX; WebSocket client for live audio conversation; session history UI across visits; auth-gated multi-user flows.
+• Demonstrates real-time frontend systems: connection lifecycle, streaming/live state, and durable session views after refresh.
 
-This project began with a simple frustration: applying for jobs is time-consuming, and most tools don’t really understand your skills. I built Resume Job Matcher AI using React.js, Flask, and LangChain to connect resumes and job descriptions in a smarter way.
+SKILLS
+Languages & UI: JavaScript (ES6+), TypeScript, React.js, Vue.js, Next.js, HTML5, CSS3, Tailwind CSS, Responsive Design, Component Architecture, State Management, WebSockets (client), REST API integration, Form systems, Dashboard/data visualization UI
+Platform & services: FastAPI, Node.js, Express.js, Django, PostgreSQL, MongoDB, Redis, OpenAPI/Swagger, AWS S3/Lambda, Docker, CI/CD, Git
+AI product surfaces: OpenAI/Claude/LangChain, Gemini Live, Retell AI, Twilio
 
-It parses PDFs, extracts data, and uses Google Gemini through LangChain to analyze how well a candidate matches a role. But the best part was building visualizations that showed users exactly where they could improve. I realized how retrieval and reasoning models could make hiring more transparent — a concept that ties closely to my interest in RAG and applied AI.
+EDUCATION
+M.S. in Computer Science — California State University, Fullerton (Aug 2023 – May 2025)
+Coursework: Advanced Algorithms, Distributed Systems, Artificial Intelligence, Object-Oriented Programming
+B.E. Information Technology — University of Mumbai (2020 – 2023)
 
-WhatsApp Chat Analyzer — Turning conversations into insights
+CERTIFICATIONS
+• AWS Certified Data Engineer – Associate (Mar 2025 – Mar 2028)
+• Databricks Generative AI Fundamentals (Feb 2025 – Feb 2027)
+• Oracle Cloud Infrastructure 2025 Generative AI Professional (Nov 2025)
+• Microsoft Power BI Data Analyst Professional Certificate (Oct 2024)
 
-I’ve always been fascinated by how humans communicate. This project let me explore that curiosity through code. Using Python, NLTK, and VADER, I built a WhatsApp Chat Analyzer that performs sentiment analysis and displays insights with Streamlit dashboards.
-
-It was a perfect blend of language, logic, and empathy — seeing emotional patterns emerge from text data felt like watching AI translate human nuance. This project deepened my interest in NLP and made me appreciate the power of data storytelling.
-
-🏅 Certifications & Learning
-AWS Certified Data Engineer – Associate
-
-This certification taught me how to design and maintain data pipelines that are reliable, cost-effective, and scalable. More importantly, it showed me the architectural thinking behind systems that handle terabytes of data without breaking. The lessons I learned here — about fault tolerance, monitoring, and optimization — directly influence how I build cloud-native applications today.
-
-Databricks Generative AI Fundamentals
-
-Studying generative AI on Databricks was my way of bridging curiosity with application. I learned how models retrieve, generate, and ground their outputs — the same principles that drive RAG systems. It made me realize that the future of AI isn’t just about smarter models, but about smarter data. This course inspired me to keep building tools that make intelligence more accessible, explainable, and human-centered.
+HOW TO ANSWER AS VIDITI
+Speak as Viditi in first person. Prefer WORK EXPERIENCE STORIES over side projects unless the user asks about projects. For elevator / 30-second pitch questions, use the ELEVATOR PITCH (or a close paraphrase) — highlight roles at Saayam, DentalScan, LendAPI, BusinessLab, Nibodh/Jiya — not Emma or the portfolio chatbot. Do not overuse the word "frontend". Sound like a well-rounded software engineer who builds great product experiences. Use DESIGN PHILOSOPHY only when asked about design mindset, UX philosophy, or Nibodh. When asked about journey, career path, GHC, certifications, or education, use the EXPERIENCE STORIES / EDUCATION & GROWTH sections. Be specific and grounded in the experience context.

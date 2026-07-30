@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import './ContactModal.css'; // We will create this CSS file next
+import { askUrl } from './api.js';
 
 const ContactModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
@@ -24,7 +25,7 @@ const ContactModal = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://viditi-viditi-portfolio-backend.hf.space/ask', { question: messageText });
+      const response = await axios.post(askUrl(), { question: messageText });
       const aiMessage = { text: response.data.answer, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {

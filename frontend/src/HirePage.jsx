@@ -6,8 +6,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import rehypeRaw from 'rehype-raw';
 import './HirePage.css';
-
-const API_BASE = "https://viditi-viditi-portfolio-backend.hf.space";
+import { askUrl } from './api.js';
 
 const HirePage = ({
   onClose,
@@ -37,7 +36,7 @@ const HirePage = ({
     setInput('');
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_BASE}/ask`, { question: messageText });
+      const response = await axios.post(askUrl(), { question: messageText });
       setMessages(prev => [...prev, { text: response.data.answer, sender: 'ai' }]);
     } catch (error) {
       setMessages(prev => [...prev, { text: "Sorry, I'm having trouble connecting.", sender: 'ai' }]);
@@ -53,7 +52,7 @@ const HirePage = ({
     sendMessage(input);
   };
 
-  const initialPrompts = ["How can I contact you?", "Tell me about a challenging project", "What's your experience with AI?"];
+  const initialPrompts = ["How can I contact you?", "Tell me about a recent project", "What's your tech stack?"];
 
   const MessageBubble = ({ msg }) => (
     <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
@@ -93,7 +92,7 @@ const HirePage = ({
             <img src="/avatar.png" alt="Viditi Vartak" className="profile-avatar" />
             <div className="profile-info">
               <h2 className="profile-name">Viditi Vartak</h2>
-              <p className="profile-title">AI & Full-Stack Engineer</p>
+              <p className="profile-title">Software Engineer</p>
             </div>
             <div className="status-badge">Open to opportunities</div>
           </div>
@@ -104,18 +103,18 @@ const HirePage = ({
           <div className="detail-section">
             <h3><span role="img" aria-label="code">💻</span> Tech Stack</h3>
             <div className="tech-stack-grid">
-              <ul><li>Java</li><li>Python</li><li>Spring Boot</li><li>AWS</li></ul>
-              <ul><li>Node.js</li><li>Docker</li><li>JavaScript</li><li>Kubernetes</li></ul>
-              <ul><li>React.js</li><li>Apache Spark</li><li>Node.js</li><li>MongoDB</li></ul>
+              <ul><li>React.js</li><li>Vue.js</li><li>Next.js</li><li>TypeScript</li></ul>
+              <ul><li>JavaScript</li><li>Tailwind CSS</li><li>WebSockets</li><li>HTML/CSS</li></ul>
+              <ul><li>FastAPI</li><li>Node.js</li><li>PostgreSQL</li><li>AWS</li></ul>
             </div>
           </div>
           <div className="detail-section">
             <h3><span role="img" aria-label="checkmark">✔️</span> What I Bring</h3>
             <ul className="value-list">
-              <li>Full-stack development across React, FastAPI, Django REST, and AWS</li>
-              <li>Rapid prototyping and agile feature delivery</li>
-              <li>User-centered problem solving</li>
-              <li>Scalable system design and deployment experience</li>
+              <li>Product UI in React, Vue, and Next.js — dashboards, forms, and design systems</li>
+              <li>End-to-end delivery with strong API collaboration and reliable UX under load</li>
+              <li>Reusable components and TypeScript-first architecture for faster shipping</li>
+              <li>Real-time interfaces, accessible responsive design, and clear design-to-code handoff</li>
             </ul>
           </div>
           <div className="modal-actions">

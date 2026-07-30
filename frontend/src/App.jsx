@@ -10,8 +10,7 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ResumePage from './ResumePage.jsx'; 
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-
-const API_BASE = "https://viditi-viditi-portfolio-backend.hf.space";
+import { askUrl } from './api.js';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -47,14 +46,14 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE}/ask`, {
+      const response = await axios.post(askUrl(), {
         question: messageText,
       });
       const aiMessage = { text: response.data.answer, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error:', error);
-      const errorMessage = { text: "Sorry, I'm having trouble connecting to the AI brain right now.", sender: 'ai' };
+      const errorMessage = { text: "Sorry, I'm having trouble connecting right now.", sender: 'ai' };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -85,9 +84,8 @@ function App() {
 
   const suggestions = [
       "Give me your 30-second pitch",
-      
-      "Summarize your experience in 3 bullet points"
-  ];
+      "What tech stack do you use?",
+    ];
 
   const MessageBubble = ({ msg }) => (
     <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
@@ -150,8 +148,8 @@ function App() {
         <div className="home-container">
           <div className="hero-section">
             <div className="hero-content">
-              <h1 className="hero-title">Viditi Portfolio</h1>
-              <p className="hero-subtitle">My Life in Data: Crafting Experiences with Purpose.</p>
+              <h1 className="hero-title">Viditi Vartak</h1>
+              <p className="hero-subtitle">Crafting Experiences with Purpose.</p>
               <img src="/avatar.png" alt="Viditi Vartak" className="hero-avatar" />
             </div>
           </div>
@@ -173,7 +171,7 @@ function App() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Hi, I'm Viditi, ask me anything..."
+                placeholder="Ask me about my frontend work..."
                 className="chat-input"
                 disabled={isLoading}
               />
@@ -236,7 +234,7 @@ function App() {
               className="chat-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Hi, I'm Viditi, ask me anything..."
+              placeholder="Ask me about my frontend work..."
               disabled={isLoading}
             />
             <button
@@ -307,7 +305,7 @@ function App() {
             className="chat-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Hi, I'm Viditi, ask me anything..."
+            placeholder="Ask me about my frontend work..."
             disabled={isLoading}
           />
           <button
