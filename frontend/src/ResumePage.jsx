@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import rehypeRaw from 'rehype-raw';
-import './ResumePage.css'; // We will create this CSS file next
+import './ResumePage.css';
 
 const ResumePage = ({
   onClose,
@@ -50,7 +50,11 @@ const ResumePage = ({
     sendMessage(input);
   };
 
-  const initialPrompts = ["Tell me about your experience at LendAPI", "What is SkySpark?", "What are your certifications?"];
+  const initialPrompts = [
+    "Tell me about your Vue dashboard at Saayam",
+    "What did you build at DentalScan?",
+    "Describe your LendAPI React builder",
+  ];
 
   const MessageBubble = ({ msg }) => (
     <div className={`msg-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
@@ -91,25 +95,45 @@ const ResumePage = ({
 
         <div className="resume-section">
           <h3>Professional Summary</h3>
-          <p>My journey in technology has been driven by a desire to build things that make a real impact. It began to take shape during my time as a Software Engineer at BussinessLab, where I dove deep into backend development and automation, leading me to pursue a Master's in Computer Science to understand the architecture of large-scale systems and AI.</p>
+          <p>
+            Software engineer who builds product experiences people actually use. Experience spans Saayam For All
+            (Vue donor dashboards), DentalScan (React/TypeScript clinic tools), LendAPI (React loan application builder),
+            BusinessLab (React insurance ops UIs), and Nibodh (mobile React for 5,000+ users).
+          </p>
         </div>
 
         <div className="resume-section">
           <h3>Work Experience</h3>
           <div className="experience-item">
-            <h4>Software Engineer Intern, LendAPI</h4>
-            <span>Jun 2025 – Aug 2025</span>
+            <h4>Full Stack Developer, Saayam For All</h4>
+            <span>Oct 2025 – Present</span>
             <ul>
-              <li>Built a full-stack B2B loan application using Python, Django, and JavaScript, reducing processing time by 45%.</li>
-              <li>Developed an intelligent customer service assistant with fine-tuned models, automating 60% of support queries.</li>
+              <li>Rebuilt the donor-facing Vue.js dashboard for real-time donations, recurring gifts, and financial reporting.</li>
+              <li>Built a reusable Vue.js component library (tables, multi-step forms, charts) that sped up feature delivery.</li>
             </ul>
           </div>
           <div className="experience-item">
-            <h4>Software Engineer, BussinessLab</h4>
-            <span>Aug 2021 – Jul 2023</span>
+            <h4>Software Engineer Intern, DentalScan</h4>
+            <span>Aug 2025 – Oct 2025</span>
             <ul>
-              <li>Architected microservices using Java (Spring Boot), reducing risk identification time by 30%.</li>
-              <li>Engineered a modular self-service platform with React and TypeScript, reducing engineering support requests by 60%.</li>
+              <li>Built React/TypeScript patient dashboards with live appointment tracking and Twilio/Retell AI follow-ups.</li>
+              <li>Added WebSocket sync so clinic dashboards stayed live without page refreshes.</li>
+            </ul>
+          </div>
+          <div className="experience-item">
+            <h4>Software Engineer Intern, LendAPI</h4>
+            <span>Jun 2025 – Aug 2025</span>
+            <ul>
+              <li>Built a drag-and-drop React loan application builder for non-technical lending workflow configuration.</li>
+              <li>Shipped dynamic forms and application management UI that streamlined lender onboarding.</li>
+            </ul>
+          </div>
+          <div className="experience-item">
+            <h4>Software Engineer, BusinessLab</h4>
+            <span>Aug 2022 – Jul 2023</span>
+            <ul>
+              <li>Developed React insurance dashboards for policy lifecycle, underwriting, and operational reporting.</li>
+              <li>Architected reusable component libraries and REST integrations that reduced time-to-feature.</li>
             </ul>
           </div>
         </div>
@@ -117,16 +141,15 @@ const ResumePage = ({
         <div className="resume-section">
           <h3>Projects</h3>
           <div className="project-item">
-            <h4>SkySpark: Scalable Airline Performance Analysis</h4>
-            <p>Engineered a cloud-native data pipeline with Kubernetes, Apache Spark, and Cassandra for airline performance analysis, improving data accessibility by 40%.</p>
+            <h4>AI Portfolio Chatbot</h4>
+            <p>RAG chatbot (React, FastAPI, LangChain, ChromaDB, Tailwind) that answers portfolio questions with vector search and a polished chat UI.</p>
           </div>
-           <div className="project-item">
-            <h4>Resume Job Matcher AI</h4>
-            <p>Built an AI-powered platform using React.js, Flask, and Gemini via LangChain to analyze resumes and job descriptions, visualizing skill matches and suggesting improvements.</p>
+          <div className="project-item">
+            <h4>Emma – AI Therapist</h4>
+            <p>Real-time voice therapy app in Next.js/TypeScript using Gemini Live and WebSockets, with Prisma/PostgreSQL session history on Vercel.</p>
           </div>
         </div>
 
-        {/* Messages list */}
         <div className="chat-messages-container">
           <div className="message-list">
             {messages.map((m, idx) => (

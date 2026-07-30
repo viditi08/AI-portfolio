@@ -96,7 +96,7 @@ const ContactPage = ({
               <img src="/avatar.png" alt="Viditi Vartak" />
               <div>
                   <h2>Get in touch</h2>
-                  <p>Viditi Vartak</p>
+                  <p>Viditi Vartak · Software Engineer</p>
               </div>
               <span className="responsive-badge">Responsive</span>
           </div>

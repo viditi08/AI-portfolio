@@ -22,13 +22,13 @@ const AboutModal = ({ isOpen, onRequestClose }) => {
       </div>
       <div className="modal-body">
         <p>
-          Hi, I'm Viditi Vartak, an AI Engineer and Full-Stack Developer with a passion for building intelligent and user-friendly applications.
+          Hi, I'm Viditi Vartak — a software engineer who builds products people enjoy using.
         </p>
         <p>
-          My journey in tech has been driven by a curiosity for how things work and a desire to create solutions that make a difference. I specialize in leveraging large language models (LLMs) like Claude and GPT to build powerful AI-driven features, and I'm equally comfortable architecting robust backends with Python (FastAPI, Django) and crafting beautiful, responsive frontends with React and modern JavaScript.
+          I design interfaces that users actually want to use—bridging the gap between beautiful design and functional code. At Nibodh, I built React-based mobile UIs serving 5,000+ users, learning firsthand how design choices drive engagement. I combine that user-first mindset with scalable backend systems to create seamless, end-to-end experiences.
         </p>
         <p>
-          This portfolio is a demonstration of my skills—a chat interface powered by the Claude API on the backend and a sleek React UI on the frontend. Feel free to ask my AI assistant anything about my work!
+          Ask my portfolio assistant anything about my work, projects, or experience.
         </p>
       </div>
     </Modal>
