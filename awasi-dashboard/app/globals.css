@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-surface: #111118;
+  --bg-elevated: #18181f;
+  --bg-border: #242430;
+  --accent: #2dd4bf;
+  --accent-dim: rgba(45, 212, 191, 0.12);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Geist', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #242430;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2dd4bf44;
+}
+
+/* Prevent graph canvas from capturing all pointer events when not needed */
+.graph-container canvas {
+  display: block;
+}
